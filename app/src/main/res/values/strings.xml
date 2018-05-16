@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">bopit</string>
-    <string name="gostopbutton_go">GO!</string>
-    <string name="gostopbutton_stop">STOP!</string>
-    <string name="reactionbutton_hit">HIT!</string>
-    <string name="reactionbutton_stay">STAY!</string>
+    <string name="str_button_startgame">START</string>
+    <string name="str_button_stats">STOP!</string>
 </resources>

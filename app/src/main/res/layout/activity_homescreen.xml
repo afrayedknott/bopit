@@ -10,16 +10,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
-        android:text="START"
-        android:layout_alignParentTop="true"
-        android:onClick="gameStartButtonListener"/>
+        android:text="@string/str_button_startgame"
+        android:layout_alignParentTop="true" />
 
     <Button
         android:id="@+id/button_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
-        android:text="STATS"
+        android:text="@string/str_button_stats"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
