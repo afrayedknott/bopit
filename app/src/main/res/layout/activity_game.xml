@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,22 +14,17 @@
 
     <Button
         android:id="@+id/button_restartgame"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="60dp"
-        android:text="@string/gostopbutton_go"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:text="@string/str_button_restartgame"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/button_reaction"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginBottom="60dp"
-        android:text="@string/reactionbutton_stay"
-        app:layout_constraintBottom_toTopOf="@+id/button_restartgame"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

@@ -21,4 +21,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
 
+    <!--may need to use layout_alignParentLeft in button_stats in order to support older SDKs but
+    keeping as is at suggestion of Android Studio-->
+
 </RelativeLayout>

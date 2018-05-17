@@ -2,4 +2,5 @@
     <string name="app_name">bopit</string>
     <string name="str_button_startgame">START</string>
     <string name="str_button_stats">STATS</string>
+    <string name="str_button_restartgame">PLAY AGAIN?</string>
 </resources>

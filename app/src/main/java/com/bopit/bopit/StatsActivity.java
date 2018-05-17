@@ -21,6 +21,7 @@ import java.util.Random;
 
 public class StatsActivity extends AppCompatActivity {
 
+    private User user;
     private StatsEntry statsEntry;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;

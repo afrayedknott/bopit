@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ public class GameActivity extends AppCompatActivity {
     private CollectionReference userCollectionRef;
     private CollectionReference statsEntryCollectionRef;
     private StatsEntry statsEntry;
-    private ReactionTimeTracker rTT = new ReactionTimeTracker();
+    private ReactionTimeTracker rTT;
+    private DisplayMetricsManager dMM;
 
     // Clock running in background
     Handler timerHandler = new Handler();
@@ -37,29 +40,31 @@ public class GameActivity extends AppCompatActivity {
             // ticks every 1000ms
             timerHandler.postDelayed(this, 1000);
 
-            if(rTT.getMillis() > rTT.getRandomTime(rTTIter)+rTT.getPreviousRoundEndTime()){
+            if (rTT.getMillis() > rTT.getRandomTime(rTTIter) + rTT.getPreviousRoundEndTime()) {
 
                 // if clock's ms is greater than the randomized time plus 
                 rTT.setHitStartTime(rTTIter);
-                reactionButton.setText(R.string.reactionbutton_hit);
+                setRandomButtonLocation();
+                reactionButton.setVisibility(View.VISIBLE);
 
             }
 
-            if(reactionButton.getText().equals("HIT!") && (rTT.getMillis() > rTT.getHitStartTime()+3000)) {
+            if (reactionButton.getVisibility() == View.VISIBLE && (rTT.getMillis() > rTT.getHitStartTime() + 3000)) {
 
                 rTT.getRandomTime(rTTIter);
                 rTT.setPreviousRoundEndTime(rTT.getMillis());
-                reactionButton.setText(R.string.reactionbutton_stay);
+                reactionButton.setVisibility(View.INVISIBLE);
 
             }
 
-            if(rTTIter >= 19){
+            if (rTTIter >= 19) {
 
                 timerHandler.removeCallbacks(timerRunnable);
-                restartGameButton.setText(R.string.gostopbutton_go);
+                restartGameButton.setText(R.string.str_button_restartgame);
                 statsEntry.setMeanReactionTime(rTT.calculateMeanReactionTime());
                 statsEntryCollectionRef.document().set(statsEntry);
                 rTTIter = 0;
+                restartGameButton.setVisibility(View.VISIBLE);
 
             }
 
@@ -68,43 +73,30 @@ public class GameActivity extends AppCompatActivity {
     };
 
     private Button restartGameButton, reactionButton;
+    private ViewGroup.MarginLayoutParams reactionButtonMLP;
 
     private View.OnClickListener restartGameButtonListener = new View.OnClickListener() {
 
         public void onClick(View V) {
 
-            if (restartGameButton.getText().equals("STOP!")) {
+            startGame();
 
-                timerHandler.removeCallbacks(timerRunnable);
-                restartGameButton.setText(R.string.gostopbutton_go);
-                rTTIter = 0;
-
-            } else {
-
-                rTT.setStartTime(System.currentTimeMillis());
-                timerHandler.postDelayed(timerRunnable, 0);
-                rTT.setRandomTimesToHit();
-                restartGameButton.setText(R.string.gostopbutton_stop);
-                reactionButton.setText(R.string.reactionbutton_stay);
-
-            }
         }
+
     };
 
     private View.OnClickListener reactionButtonListener = new View.OnClickListener() {
 
         public void onClick(View V) {
 
-            if (reactionButton.getText().equals("HIT!")) {
-
-                rTTIter++;
-                rTT.setPreviousRoundEndTime(rTT.getMillis());
-                rTT.recordReactionTime();
-                reactionButton.setText(R.string.reactionbutton_stay);
-
-            }
+            rTTIter++;
+            rTT.setPreviousRoundEndTime(rTT.getMillis());
+            rTT.recordReactionTime();
+            reactionButton.setVisibility(View.INVISIBLE);
+            setRandomButtonLocation();
 
         }
+
     };
 
     @Override
@@ -113,22 +105,28 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //Initialize user data
         Intent receiveUserIntent = this.getIntent();
         user = (User) receiveUserIntent.getSerializableExtra("USERNAME_VALUE");
-        statsEntry = new StatsEntry(user.getUsername(), Long.valueOf(100000));
 
         //Initializing the views
         restartGameButton = findViewById(R.id.button_restartgame);
         reactionButton = findViewById(R.id.button_reaction);
 
-
-
         restartGameButton.setOnClickListener(restartGameButtonListener);
         reactionButton.setOnClickListener(reactionButtonListener);
 
+        reactionButtonMLP = (ViewGroup.MarginLayoutParams) reactionButton.getLayoutParams();
+
+        //Initialize game engine
+        rTT = new ReactionTimeTracker();
+        startDisplayMetricsManager();
+
+        //Initialize db conn
         FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
         statsEntryCollectionRef = firestoreDatabase.collection("highscores");
 
+        startGame();
     }
 
     private void startStatsActivity() {
@@ -138,7 +136,32 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+    private void startDisplayMetricsManager() {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dMM = new DisplayMetricsManager(displayMetrics, reactionButton);
+
+    }
+
+    private void startGame() {
+
+        rTT.setStartTime(System.currentTimeMillis());
+        timerHandler.postDelayed(timerRunnable, 0);
+        rTT.setRandomTimesToHit();
+        rTTIter = 0;
+        restartGameButton.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void setRandomButtonLocation() {
+
+        reactionButtonMLP.setMargins(dMM.getRandomLeftMargin(), dMM.getRandomTopMargin(),0,0);
+
+    }
+
 }
 
+// TODO: randomize button location
 // TODO: Drawables class
 // TODO: Cloudside Functions class
