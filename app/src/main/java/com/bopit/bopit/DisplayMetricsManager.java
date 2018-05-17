@@ -25,6 +25,7 @@ public class DisplayMetricsManager extends DisplayMetrics {
         button = b;
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
+        random = new Random();
 
     }
 
@@ -44,14 +45,13 @@ public class DisplayMetricsManager extends DisplayMetrics {
         this.width = width;
     }
 
-    public void setRandomButtonLocation(){
+    public void generateRandomMarginsForButton(){
 
         //button measurements to account for
         int buttonVerticalPixelsDeduction = button.getHeight();
         int buttonHorizontalPixelsDeduction = button.getWidth();
 
         //randomized location coordinates
-        random = new Random();
         setRandomLeftMargin(random.nextInt(width - buttonHorizontalPixelsDeduction));
         setRandomTopMargin(random.nextInt(height - buttonVerticalPixelsDeduction));
 

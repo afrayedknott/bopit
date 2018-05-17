@@ -5,9 +5,11 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -57,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
+            //end of game
             if (rTTIter >= 19) {
 
                 timerHandler.removeCallbacks(timerRunnable);
@@ -73,7 +76,8 @@ public class GameActivity extends AppCompatActivity {
     };
 
     private Button restartGameButton, reactionButton;
-    private ViewGroup.MarginLayoutParams reactionButtonMLP;
+    private LinearLayout reactionButtonLayout;
+    private LinearLayout.LayoutParams newButtonLayoutParam;
 
     private View.OnClickListener restartGameButtonListener = new View.OnClickListener() {
 
@@ -116,7 +120,7 @@ public class GameActivity extends AppCompatActivity {
         restartGameButton.setOnClickListener(restartGameButtonListener);
         reactionButton.setOnClickListener(reactionButtonListener);
 
-        reactionButtonMLP = (ViewGroup.MarginLayoutParams) reactionButton.getLayoutParams();
+        reactionButtonLayout = findViewById(R.id.layout_reactionbutton);
 
         //Initialize game engine
         rTT = new ReactionTimeTracker();
@@ -156,7 +160,12 @@ public class GameActivity extends AppCompatActivity {
 
     private void setRandomButtonLocation() {
 
-        reactionButtonMLP.setMargins(dMM.getRandomLeftMargin(), dMM.getRandomTopMargin(),0,0);
+        newButtonLayoutParam = new LinearLayout.LayoutParams(reactionButtonLayout.getWidth(), reactionButtonLayout.getHeight());
+        dMM.generateRandomMarginsForButton();
+        Log.i("randomleft margin", Integer.toString(dMM.getRandomLeftMargin()));
+        Log.i("randomtop margin", Integer.toString(dMM.getRandomTopMargin()));
+        newButtonLayoutParam.setMargins(100, 100,0,0); // TODO: programmatic updating using dMM but also LayoutParam generates too small so unit of measure must be diff
+        reactionButton.setLayoutParams(newButtonLayoutParam);
 
     }
 
