@@ -30,6 +30,7 @@ public class GameActivity extends AppCompatActivity {
     private StatsEntry statsEntry;
     private ReactionTimeTracker rTT;
     private DisplayMetricsManager dMM;
+    private DisplayMetrics displayMetrics;
 
     // Clock running in background
     Handler timerHandler = new Handler();
@@ -142,7 +143,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void startDisplayMetricsManager() {
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
+        displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         dMM = new DisplayMetricsManager(displayMetrics, reactionButton);
 
@@ -162,10 +163,9 @@ public class GameActivity extends AppCompatActivity {
 
         newButtonLayoutParam = new LinearLayout.LayoutParams(reactionButtonLayout.getWidth(), reactionButtonLayout.getHeight());
         dMM.generateRandomMarginsForButton();
-        Log.i("randomleft margin", Integer.toString(dMM.getRandomLeftMargin()));
-        Log.i("randomtop margin", Integer.toString(dMM.getRandomTopMargin()));
-        newButtonLayoutParam.setMargins(100, 100,0,0); // TODO: programmatic updating using dMM but also LayoutParam generates too small so unit of measure must be diff
+        newButtonLayoutParam.setMargins(0,0,0,0);
         reactionButton.setLayoutParams(newButtonLayoutParam);
+        Log.d("new width", Boolean.toString(reactionButtonLayout.getWidth() == newButtonLayoutParam.width));
 
     }
 

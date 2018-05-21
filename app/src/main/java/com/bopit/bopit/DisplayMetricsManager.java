@@ -6,10 +6,11 @@ import android.widget.Button;
 
 import java.util.Random;
 
-public class DisplayMetricsManager extends DisplayMetrics {
+public class DisplayMetricsManager {
 
     private DisplayMetrics displayMetrics;
     private Button button;
+    private float screenPixelScale;
     private int height;
     private int width;
     private int randomLeftMargin;
@@ -23,6 +24,7 @@ public class DisplayMetricsManager extends DisplayMetrics {
 
         displayMetrics = dM;
         button = b;
+        screenPixelScale = displayMetrics.density;
         height = displayMetrics.heightPixels;
         width = displayMetrics.widthPixels;
         random = new Random();
@@ -87,5 +89,13 @@ public class DisplayMetricsManager extends DisplayMetrics {
 
     public void setRandomTopMargin(int randomTopMargin) {
         this.randomTopMargin = randomTopMargin;
+    }
+
+    public float getScreenPixelScale() {
+        return screenPixelScale;
+    }
+
+    public void setScreenPixelScale(float screenPixelScale) {
+        this.screenPixelScale = displayMetrics.density;
     }
 }
