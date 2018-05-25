@@ -3,14 +3,14 @@ package com.bopit.bopit;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import java.util.Random;
 
-public class DisplayMetricsManager {
+public class RandomButtonLocationGenerator {
 
-    private DisplayMetrics displayMetrics;
+    private RelativeLayout relativeLayout;
     private Button button;
-    private float screenPixelScale;
     private int height;
     private int width;
     private int randomLeftMargin;
@@ -20,13 +20,12 @@ public class DisplayMetricsManager {
     private Random random;
 
 
-    public DisplayMetricsManager(DisplayMetrics dM, Button b){
+    public RandomButtonLocationGenerator(RelativeLayout rL, Button b){
 
-        displayMetrics = dM;
+        relativeLayout = rL;
         button = b;
-        screenPixelScale = displayMetrics.density;
-        height = displayMetrics.heightPixels;
-        width = displayMetrics.widthPixels;
+        height = rL.getHeight();
+        width = rL.getWidth();
         random = new Random();
 
     }
@@ -50,8 +49,8 @@ public class DisplayMetricsManager {
     public void generateRandomMarginsForButton(){
 
         //button measurements to account for
-        int buttonVerticalPixelsDeduction = button.getHeight();
         int buttonHorizontalPixelsDeduction = button.getWidth();
+        int buttonVerticalPixelsDeduction = button.getHeight();
 
         //randomized location coordinates
         setRandomLeftMargin(random.nextInt(width - buttonHorizontalPixelsDeduction));
@@ -91,11 +90,4 @@ public class DisplayMetricsManager {
         this.randomTopMargin = randomTopMargin;
     }
 
-    public float getScreenPixelScale() {
-        return screenPixelScale;
-    }
-
-    public void setScreenPixelScale(float screenPixelScale) {
-        this.screenPixelScale = displayMetrics.density;
-    }
 }
