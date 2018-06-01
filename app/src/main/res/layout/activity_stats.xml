@@ -1,15 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="30dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:orientation="vertical"
     tools:context="com.bopit.bopit.StatsActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/highscores_recyclerview"
-        android:scrollbars="vertical"
+    <TextView
+        android:id="@+id/textview_stats_flavor1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:text="You're better than"
+        android:layout_alignParentTop="true"
+        android:gravity="center"/>
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/textview_stats_pct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/textview_stats_flavor1"
+        android:text="56%" />
+
+    <TextView
+        android:id="@+id/textview_stats_flavor2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/textview_stats_pct"
+        android:text="Of the players!"/>
+
+    <Button
+        android:id="@+id/button_settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toLeftOf="@+id/button_restartgame"
+        android:layout_below="@+id/textview_stats_flavor2"/>
+
+    <Button
+        android:id="@+id/button_restartgame"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textview_stats_flavor2"/>
+
+    <Button
+        android:id="@+id/button_list"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@+id/button_restartgame"
+        android:layout_below="@+id/textview_stats_flavor2"/>
+
+    <TextView
+        android:id="@+id/textview_previous_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/button_restartgame"
+        android:text="Game Stats" />
+
+    <TextView
+        android:id="@+id/textview_previous_avg_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_previous_title"
+        android:text="Average Reaction Time" />
+
+    <TextView
+        android:id="@+id/textview_previous_avg_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_below="@+id/textview_previous_title"
+        android:text="0.87 seconds" />
+
+    <TextView
+        android:id="@+id/textview_previous_fastest_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_previous_avg_subtitle"
+        android:text="Fastest Reaction time" />
+
+    <TextView
+        android:id="@+id/textview_previous_fastest_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_below="@+id/textview_previous_avg_subtitle"
+        android:text="0.58 seconds" />
+
+    <TextView
+        android:id="@+id/textview_pb_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_previous_fastest_subtitle"
+        android:text="Personal Best" />
+
+    <TextView
+        android:id="@+id/textview_pb_avg_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_pb_title"
+        android:text="Average Reaction Time" />
+
+    <TextView
+        android:id="@+id/textview_pb_avg_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_below="@+id/textview_pb_title"
+        android:text="0.64 seconds" />
+
+    <TextView
+        android:id="@+id/textview_pb_fastest_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_pb_avg_subtitle"
+        android:text="Fastest Reaction time" />
+
+    <TextView
+        android:id="@+id/textview_pb_fastest_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_below="@+id/textview_pb_avg_subtitle"
+        android:text="0.47 seconds" />
+
+
+</RelativeLayout>

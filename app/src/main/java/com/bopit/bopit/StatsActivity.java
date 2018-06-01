@@ -40,18 +40,18 @@ public class StatsActivity extends AppCompatActivity {
         setUpFirestoreDB();
         loadFirestoreData();
 /*        generateTestData();*/
-        setUpRecyclerView();
+/*        setUpRecyclerView();*/
 
     }
 
-    private void setUpRecyclerView() {
+/*    private void setUpRecyclerView() {
 
         highScoresRecyclerView = findViewById(R.id.highscores_recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         highScoresRecyclerView.setLayoutManager(mLayoutManager);
         attachRecyclerViewAdapter();
 
-    }
+    }*/
 
     private void setUpFirestoreDB() {
 
@@ -78,7 +78,7 @@ public class StatsActivity extends AppCompatActivity {
 
                 }
 
-                attachRecyclerViewAdapter();
+                /*attachRecyclerViewAdapter();*/
 
             }
 
