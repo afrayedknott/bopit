@@ -74,6 +74,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
-    //TODO: create a method for checking for unique name
-
 }
+
+//TODO: create a method for checking for unique name
+//TODO: add trigger on stats button to recalculate percentile because other users might move percentile around

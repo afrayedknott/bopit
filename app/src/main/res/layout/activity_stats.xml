@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_below="@+id/textview_stats_pct"
+        android:layout_marginBottom="20dp"
         android:text="Of the players!"/>
 
     <Button
@@ -39,21 +40,24 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_toLeftOf="@+id/button_restartgame"
-        android:layout_below="@+id/textview_stats_flavor2"/>
+        android:layout_below="@+id/textview_stats_flavor2"
+        android:layout_marginBottom="50dp"/>
 
     <Button
         android:id="@+id/button_restartgame"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textview_stats_flavor2"/>
+        android:layout_below="@+id/textview_stats_flavor2"
+        android:layout_marginBottom="50dp"/>
 
     <Button
         android:id="@+id/button_list"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_toRightOf="@+id/button_restartgame"
-        android:layout_below="@+id/textview_stats_flavor2"/>
+        android:layout_below="@+id/textview_stats_flavor2"
+        android:layout_marginBottom="50dp"/>
 
     <TextView
         android:id="@+id/textview_previous_title"
@@ -61,7 +65,8 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/button_restartgame"
-        android:text="Game Stats" />
+        android:text="Game Stats"
+        android:layout_marginBottom="5dp"/>
 
     <TextView
         android:id="@+id/textview_previous_avg_subtitle"
@@ -85,7 +90,8 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_previous_avg_subtitle"
-        android:text="Fastest Reaction time" />
+        android:text="Fastest Reaction time"
+        android:layout_marginBottom="15dp"/>
 
     <TextView
         android:id="@+id/textview_previous_fastest_time"
@@ -101,7 +107,8 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_previous_fastest_subtitle"
-        android:text="Personal Best" />
+        android:text="Personal Best"
+        android:layout_marginBottom="5dp"/>
 
     <TextView
         android:id="@+id/textview_pb_avg_subtitle"

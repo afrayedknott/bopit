@@ -193,6 +193,5 @@ public class GameActivity extends AppCompatActivity {
 
 }
 
-// TODO: randomize button location
 // TODO: Drawables class
 // TODO: Cloudside Functions class
