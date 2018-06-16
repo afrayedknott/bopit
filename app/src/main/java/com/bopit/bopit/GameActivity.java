@@ -1,11 +1,9 @@
 package com.bopit.bopit;
 
 import android.content.Intent;
-import android.os.Debug;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +27,7 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference statsEntryCollectionRef;
-    private StatsEntry statsEntry;
+    private GameRecord gameRecord;
     private ReactionTimeTracker rTT;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
@@ -66,8 +64,8 @@ public class GameActivity extends AppCompatActivity {
 
                 timerHandler.removeCallbacks(gameTimerRunnable);
                 restartGameButton.setText(R.string.str_button_restartgame);
-                statsEntry.setMeanReactionTime(rTT.calculateMeanReactionTime());
-                statsEntryCollectionRef.document().set(statsEntry);
+                gameRecord.setMeanReactionTime(rTT.calculateMeanReactionTime());
+                statsEntryCollectionRef.document().set(gameRecord);
                 rTTIter = 0;
                 restartGameButton.setVisibility(View.VISIBLE);
 

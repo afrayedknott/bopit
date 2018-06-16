@@ -3,7 +3,6 @@ package com.bopit.bopit;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,12 +21,12 @@ import java.util.Random;
 public class StatsActivity extends AppCompatActivity {
 
     private User user;
-    private StatsEntry statsEntry;
+    private GameRecord gameRecord;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference highScoreEntryCollectionRef;
     private StatsRecyclerViewAdapter statsRecyclerViewAdapter;
-    private ArrayList<StatsEntry> statsEntryArrayList = new ArrayList<StatsEntry>(0);
+    private ArrayList<GameRecord> gameRecordArrayList = new ArrayList<GameRecord>(0);
     private RecyclerView highScoresRecyclerView;
 
     @Override
@@ -69,12 +68,13 @@ public class StatsActivity extends AppCompatActivity {
 
                 for(DocumentSnapshot querySnapshot : task.getResult()) {
 
-                    StatsEntry statsEntry =
-                            new StatsEntry(
+                    GameRecord gameRecord =
+                            new GameRecord(
                                     querySnapshot.getString("username"),
-                                    querySnapshot.getLong("meanReactionTime"));
-                    statsEntry.setHighscoreKey(querySnapshot.getId());
-                    statsEntryArrayList.add(statsEntry);
+                                    querySnapshot.getLong("avg"),
+                                    querySnapshot.getLong("best"));
+                    gameRecord.setStatsKey(querySnapshot.getId());
+                    gameRecordArrayList.add(gameRecord);
 
                 }
 
@@ -97,7 +97,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private void attachRecyclerViewAdapter() {
 
-        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, statsEntryArrayList);
+        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameRecordArrayList);
         highScoresRecyclerView.setAdapter(statsRecyclerViewAdapter);
 
     }
@@ -108,12 +108,12 @@ public class StatsActivity extends AppCompatActivity {
 
         for(int testDataIter = 0; testDataIter < 20; testDataIter++) {
 
-            statsEntry = new StatsEntry("h", (long) 500);
-            statsEntry.setUsername("joael");
-            statsEntry.setMeanReactionTime(Long.valueOf(rNG.nextInt(10000)));
-            statsEntryArrayList.add(statsEntry);
+            gameRecord = new GameRecord("h", (double) 0.596, (double) 0.437);
+            gameRecord.setUsername("joael");
+            gameRecord.setMeanReactionTime(Long.valueOf(rNG.nextInt(10000)));
+            gameRecordArrayList.add(gameRecord);
 
-            Log.i("arraylist size", Integer.toString(statsEntryArrayList.size()));
+            Log.i("arraylist size", Integer.toString(gameRecordArrayList.size()));
 
         }
 

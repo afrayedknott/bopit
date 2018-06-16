@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 public class StatsRecyclerViewAdapter extends RecyclerView.Adapter<StatsViewHolder> {
 
-    private ArrayList<StatsEntry> statsEntryArrayList;
+    private ArrayList<GameRecord> gameRecordArrayList;
     private Context context;
 
-    public StatsRecyclerViewAdapter(Context context, ArrayList<StatsEntry> statsEntryArrayList) {
+    public StatsRecyclerViewAdapter(Context context, ArrayList<GameRecord> gameRecordArrayList) {
 
-        this.statsEntryArrayList = statsEntryArrayList;
+        this.gameRecordArrayList = gameRecordArrayList;
 
     }
 
@@ -32,15 +32,15 @@ public class StatsRecyclerViewAdapter extends RecyclerView.Adapter<StatsViewHold
     @Override
     public void onBindViewHolder(StatsViewHolder holder, int position) {
 
-        StatsEntry statsEntry = statsEntryArrayList.get(position);
-        holder.highScorerNameTextView.setText(statsEntry.getUsername());
-        holder.highScoreTextView.setText(Long.toString(statsEntry.getMeanReactionTime()));
+        GameRecord gameRecord = gameRecordArrayList.get(position);
+        holder.highScorerNameTextView.setText(gameRecord.getUsername());
+        holder.highScoreTextView.setText(Long.toString(gameRecord.getMeanReactionTime()));
 
     }
 
     @Override
     public int getItemCount() {
-        return statsEntryArrayList.size();
+        return gameRecordArrayList.size();
     }
 
 }

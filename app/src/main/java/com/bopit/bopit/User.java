@@ -7,10 +7,10 @@ public class User implements Serializable {
     private String userKey;
     private String username;
     private String phoneId;
-    private float pbAverage;
-    private float pbBest;
-    private float previousAverage;
-    private float previousBest;
+    private double pbAverage;
+    private double pbBest;
+    private double previousAverage;
+    private double previousBest;
 
     public User(String name) {
 
@@ -42,35 +42,35 @@ public class User implements Serializable {
         this.phoneId = phoneId;
     }
 
-    public float getPbAverage() {
+    public double getPbAverage() {
         return pbAverage;
     }
 
-    public void setPbAverage(float pbAverage) {
+    public void setPbAverage(double pbAverage) {
         this.pbAverage = pbAverage;
     }
 
-    public float getPbBest() {
+    public double getPbBest() {
         return pbBest;
     }
 
-    public void setPbBest(float pbBest) {
+    public void setPbBest(double pbBest) {
         this.pbBest = pbBest;
     }
 
-    public float getPreviousAverage() {
+    public double getPreviousAverage() {
         return previousAverage;
     }
 
-    public void setPreviousAverage(float previousAverage) {
+    public void setPreviousAverage(double previousAverage) {
         this.previousAverage = previousAverage;
     }
 
-    public float getPreviousBest() {
+    public double getPreviousBest() {
         return previousBest;
     }
 
-    public void setPreviousBest(float previousBest) {
+    public void setPreviousBest(double previousBest) {
         this.previousBest = previousBest;
     }
 }
