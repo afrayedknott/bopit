@@ -15,11 +15,11 @@ public class GameRecord {
 
     }
 
-    public double getMeanReactionTime() {
+    public double getAverage() {
         return avg;
     }
 
-    public void setMeanReactionTime(double highScore) {
+    public void setAverage(double highScore) {
         this.avg = highScore;
     }
 
