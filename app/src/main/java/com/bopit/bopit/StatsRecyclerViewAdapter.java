@@ -34,7 +34,7 @@ public class StatsRecyclerViewAdapter extends RecyclerView.Adapter<StatsViewHold
 
         GameRecord gameRecord = gameRecordArrayList.get(position);
         holder.highScorerNameTextView.setText(gameRecord.getUsername());
-        holder.highScoreTextView.setText(Double.toString(gameRecord.getMeanReactionTime()));
+        holder.highScoreTextView.setText(Double.toString(gameRecord.getAverage()));
 
     }
 
