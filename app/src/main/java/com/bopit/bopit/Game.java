@@ -1,13 +1,13 @@
 package com.bopit.bopit;
 
-public class GameRecord {
+public class Game {
 
     private String statsKey;
     private String username;
     private double avg;
     private double best;
 
-    public GameRecord(String name, double avg, double best){
+    public Game(String name, double avg, double best){
 
         this.username = name;
         this.avg = avg;

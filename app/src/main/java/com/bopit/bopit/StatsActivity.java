@@ -21,12 +21,12 @@ import java.util.Random;
 public class StatsActivity extends AppCompatActivity {
 
     private User user;
-    private GameRecord gameRecord;
+    private Game game;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference highScoreEntryCollectionRef;
     private StatsRecyclerViewAdapter statsRecyclerViewAdapter;
-    private ArrayList<GameRecord> gameRecordArrayList = new ArrayList<GameRecord>(0);
+    private ArrayList<Game> gameArrayList = new ArrayList<Game>(0);
     private RecyclerView highScoresRecyclerView;
 
     @Override
@@ -68,13 +68,13 @@ public class StatsActivity extends AppCompatActivity {
 
                 for(DocumentSnapshot querySnapshot : task.getResult()) {
 
-                    GameRecord gameRecord =
-                            new GameRecord(
+                    Game game =
+                            new Game(
                                     querySnapshot.getString("username"),
                                     querySnapshot.getLong("avg"),
                                     querySnapshot.getLong("best"));
-                    gameRecord.setStatsKey(querySnapshot.getId());
-                    gameRecordArrayList.add(gameRecord);
+                    game.setStatsKey(querySnapshot.getId());
+                    gameArrayList.add(game);
 
                 }
 
@@ -97,7 +97,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private void attachRecyclerViewAdapter() {
 
-        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameRecordArrayList);
+        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameArrayList);
         highScoresRecyclerView.setAdapter(statsRecyclerViewAdapter);
 
     }
@@ -108,12 +108,12 @@ public class StatsActivity extends AppCompatActivity {
 
         for(int testDataIter = 0; testDataIter < 20; testDataIter++) {
 
-            gameRecord = new GameRecord("h", (double) 0.596, (double) 0.437);
-            gameRecord.setUsername("joael");
-            gameRecord.setMeanReactionTime(Long.valueOf(rNG.nextInt(10000)));
-            gameRecordArrayList.add(gameRecord);
+            game = new Game("h", (double) 0.596, (double) 0.437);
+            game.setUsername("joael");
+            game.setMeanReactionTime(Long.valueOf(rNG.nextInt(10000)));
+            gameArrayList.add(game);
 
-            Log.i("arraylist size", Integer.toString(gameRecordArrayList.size()));
+            Log.i("arraylist size", Integer.toString(gameArrayList.size()));
 
         }
 

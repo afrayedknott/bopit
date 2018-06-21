@@ -27,7 +27,7 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference statsEntryCollectionRef;
-    private GameRecord gameRecord;
+    private Game game;
     private ReactionTimeTracker rTT;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
@@ -64,8 +64,8 @@ public class GameActivity extends AppCompatActivity {
 
                 timerHandler.removeCallbacks(gameTimerRunnable);
                 restartGameButton.setText(R.string.str_button_restartgame);
-                gameRecord.setMeanReactionTime(rTT.calculateMeanReactionTime());
-                statsEntryCollectionRef.document().set(gameRecord);
+                game.setAverage(rTT.calculateMeanReactionTime());
+                statsEntryCollectionRef.document().set(game);
                 rTTIter = 0;
                 restartGameButton.setVisibility(View.VISIBLE);
 
