@@ -20,11 +20,12 @@ import java.util.Random;
 
 public class StatsActivity extends AppCompatActivity {
 
+    //data properties
     private User user;
     private GameStats gameStats;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
-    private CollectionReference highScoreEntryCollectionRef;
+    private CollectionReference gameStatsCollectionRef;
     private StatsRecyclerViewAdapter statsRecyclerViewAdapter;
     private ArrayList<GameStats> gameStatsArrayList = new ArrayList<GameStats>(0);
     private RecyclerView highScoresRecyclerView;
@@ -54,15 +55,15 @@ public class StatsActivity extends AppCompatActivity {
 
     private void setUpFirestoreDB() {
 
-        FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
-        highScoreEntryCollectionRef = firestoreDatabase.collection("highscores");
+        firestoreDatabase = FirebaseFirestore.getInstance();
+        gameStatsCollectionRef = firestoreDatabase.collection("gamestats");
         userCollectionRef = firestoreDatabase.collection("users");
 
     }
 
     private void loadFirestoreData() {
 
-        highScoreEntryCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        gameStatsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -109,7 +110,7 @@ public class StatsActivity extends AppCompatActivity {
         for(int testDataIter = 0; testDataIter < 20; testDataIter++) {
 
             gameStats = new GameStats("h", (double) 0.596, (double) 0.437);
-            gameStats.setUsername("joael");
+            gameStats.setUsername("joel");
             gameStats.setAverage(Long.valueOf(rNG.nextInt(10000)));
             gameStatsArrayList.add(gameStats);
 

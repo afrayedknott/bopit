@@ -17,17 +17,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class GameActivity extends AppCompatActivity {
 
+    //Non-Button Views, declared Buttons above their Listeners
     private TextView gameCountdownTextView;
-    private User user;
 
     // tells timer which random time to pull and counts each test
     private int rTTIter = 0;
-    private int countdownTick = 3;
 
-    private FirebaseFirestore firestoreDatabase;
-    private CollectionReference userCollectionRef;
-    private CollectionReference gameCollectionRef;
-    private GameStats gameStats;
+    private int gameStartCountdownTime = 3;
+
+    //properties related to running game
     private ReactionTimeTracker rTT;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
@@ -48,8 +46,9 @@ public class GameActivity extends AppCompatActivity {
                 restartGameButton.setText(R.string.str_button_restartgame);
                 rTT.calculateMeanReactionTime();
                 Log.i("avg", Double.toString(rTT.getAverageReactionTime()));
-                gameStats.setAverage(rTT.getAverageReactionTime());
-                gameCollectionRef.document().set(gameStats);
+
+
+
                 rTTIter = 0;
                 restartGameButton.setVisibility(View.VISIBLE);
 
@@ -78,7 +77,7 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
-
+    //Needed separate runnable for game start countdown
     Runnable gameStartCountdownRunnable = new Runnable() {
 
         @Override
@@ -92,7 +91,7 @@ public class GameActivity extends AppCompatActivity {
 
                 gameCountdownTextView.setVisibility(View.VISIBLE);
 
-            } else if(countdownTick == 0) {
+            } else if(gameStartCountdownTime == 0) {
 
                 gameCountdownTextView.setVisibility(View.INVISIBLE);
                 timerHandler.removeCallbacks(gameStartCountdownRunnable);
@@ -101,8 +100,8 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
-            gameCountdownTextView.setText(Integer.toString(countdownTick));
-            countdownTick--;
+            gameCountdownTextView.setText(Integer.toString(gameStartCountdownTime));
+            gameStartCountdownTime--;
             Log.i("text", gameCountdownTextView.getText().toString());
 
 
@@ -110,6 +109,7 @@ public class GameActivity extends AppCompatActivity {
 
     };
 
+    //Buttons section
     private Button restartGameButton, reactionButton;
     private RelativeLayout reactionButtonLayout;
     private FrameLayout.LayoutParams newButtonLayoutParam;
@@ -140,15 +140,12 @@ public class GameActivity extends AppCompatActivity {
 
     };
 
+    //ready cameras action
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
-        //Initialize user data
-        Intent receiveUserIntent = this.getIntent();
-        user = (User) receiveUserIntent.getSerializableExtra("USERNAME_VALUE");
 
         //Initializing the views
         gameCountdownTextView = findViewById(R.id.textview_startcountdown);
@@ -161,17 +158,12 @@ public class GameActivity extends AppCompatActivity {
         reactionButtonLayout = findViewById(R.id.parent_layout);
 
         //Initialize gameStats engine
-        gameStats = new GameStats(user.getUsername(), 0, 0);
         rTT = new ReactionTimeTracker();
         rTT.setNumberOfTimesToHit(20);
 
-
-        //Initialize db conn
-        FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
-        gameCollectionRef = firestoreDatabase.collection("gamestats");
-
         startGame();
     }
+
 
     private void startStatsActivity() {
 
