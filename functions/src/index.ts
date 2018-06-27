@@ -8,7 +8,7 @@ import * as functions from 'firebase-functions';
 // });
 
 export const calcPercentile = functions.firestore
-    .document('highscore_entry')
+    .document('games')
     .onUpdate((change, context) => {
 
         const newValue = change.after.data();

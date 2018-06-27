@@ -21,12 +21,12 @@ import java.util.Random;
 public class StatsActivity extends AppCompatActivity {
 
     private User user;
-    private Game game;
+    private GameStats gameStats;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference highScoreEntryCollectionRef;
     private StatsRecyclerViewAdapter statsRecyclerViewAdapter;
-    private ArrayList<Game> gameArrayList = new ArrayList<Game>(0);
+    private ArrayList<GameStats> gameStatsArrayList = new ArrayList<GameStats>(0);
     private RecyclerView highScoresRecyclerView;
 
     @Override
@@ -68,13 +68,13 @@ public class StatsActivity extends AppCompatActivity {
 
                 for(DocumentSnapshot querySnapshot : task.getResult()) {
 
-                    Game game =
-                            new Game(
+                    GameStats gameStats =
+                            new GameStats(
                                     querySnapshot.getString("username"),
                                     querySnapshot.getLong("avg"),
                                     querySnapshot.getLong("best"));
-                    game.setStatsKey(querySnapshot.getId());
-                    gameArrayList.add(game);
+                    gameStats.setGameKey(querySnapshot.getId());
+                    gameStatsArrayList.add(gameStats);
 
                 }
 
@@ -97,7 +97,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private void attachRecyclerViewAdapter() {
 
-        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameArrayList);
+        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameStatsArrayList);
         highScoresRecyclerView.setAdapter(statsRecyclerViewAdapter);
 
     }
@@ -108,12 +108,12 @@ public class StatsActivity extends AppCompatActivity {
 
         for(int testDataIter = 0; testDataIter < 20; testDataIter++) {
 
-            game = new Game("h", (double) 0.596, (double) 0.437);
-            game.setUsername("joael");
-            game.setMeanReactionTime(Long.valueOf(rNG.nextInt(10000)));
-            gameArrayList.add(game);
+            gameStats = new GameStats("h", (double) 0.596, (double) 0.437);
+            gameStats.setUsername("joael");
+            gameStats.setAverage(Long.valueOf(rNG.nextInt(10000)));
+            gameStatsArrayList.add(gameStats);
 
-            Log.i("arraylist size", Integer.toString(gameArrayList.size()));
+            Log.i("arraylist size", Integer.toString(gameStatsArrayList.size()));
 
         }
 

@@ -26,8 +26,8 @@ public class GameActivity extends AppCompatActivity {
 
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
-    private CollectionReference statsEntryCollectionRef;
-    private Game game;
+    private CollectionReference gameCollectionRef;
+    private GameStats gameStats;
     private ReactionTimeTracker rTT;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
@@ -42,6 +42,19 @@ public class GameActivity extends AppCompatActivity {
             // ticks every 1000ms
             timerHandler.postDelayed(this, 0);
 
+            if (rTTIter > rTT.getNumberOfTimesToHit()-1) {
+
+                timerHandler.removeCallbacks(gameTimerRunnable);
+                restartGameButton.setText(R.string.str_button_restartgame);
+                rTT.calculateMeanReactionTime();
+                Log.i("avg", Double.toString(rTT.getAverageReactionTime()));
+                gameStats.setAverage(rTT.getAverageReactionTime());
+                gameCollectionRef.document().set(gameStats);
+                rTTIter = 0;
+                restartGameButton.setVisibility(View.VISIBLE);
+
+            }
+
             if (reactionButton.getVisibility() == View.INVISIBLE && rTT.getMillis() > rTT.getRandomTime(rTTIter) + rTT.getPreviousRoundEndTime()) {
 
                 // if clock's ms is greater than the randomized time plus 
@@ -51,7 +64,7 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
-            if (reactionButton.getVisibility() == View.VISIBLE && rTT.getMillis() > rTT.getHitStartTime() + 3000) {
+            if (reactionButton.getVisibility() == View.VISIBLE && rTT.getMillis() > rTT.getHitStartTime() + 1000) {
 
                 rTT.getRandomTime(rTTIter);
                 rTT.setPreviousRoundEndTime(rTT.getMillis());
@@ -59,17 +72,8 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
-            //end of game
-            if (rTTIter >= 19) {
+            //end of gameStats
 
-                timerHandler.removeCallbacks(gameTimerRunnable);
-                restartGameButton.setText(R.string.str_button_restartgame);
-                game.setAverage(rTT.calculateMeanReactionTime());
-                statsEntryCollectionRef.document().set(game);
-                rTTIter = 0;
-                restartGameButton.setVisibility(View.VISIBLE);
-
-            }
 
         }
     };
@@ -124,9 +128,11 @@ public class GameActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            rTTIter++;
             rTT.setPreviousRoundEndTime(rTT.getMillis());
-            rTT.recordReactionTime();
+            rTT.addReactionTime();
+            Log.i("reaction time",rTT.getReactionTimeArrayList().get(rTTIter).toString());
+            Log.i("index",Integer.toString(rTTIter));
+            rTTIter++;
             reactionButton.setVisibility(View.INVISIBLE);
             setRandomButtonLocation();
 
@@ -154,13 +160,15 @@ public class GameActivity extends AppCompatActivity {
 
         reactionButtonLayout = findViewById(R.id.parent_layout);
 
-        //Initialize game engine
+        //Initialize gameStats engine
+        gameStats = new GameStats(user.getUsername(), 0, 0);
         rTT = new ReactionTimeTracker();
+        rTT.setNumberOfTimesToHit(20);
 
 
         //Initialize db conn
         FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
-        statsEntryCollectionRef = firestoreDatabase.collection("highscores");
+        gameCollectionRef = firestoreDatabase.collection("gamestats");
 
         startGame();
     }

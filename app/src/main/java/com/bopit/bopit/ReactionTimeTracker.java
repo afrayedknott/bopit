@@ -11,17 +11,18 @@ import java.util.Random;
 
 public class ReactionTimeTracker{
 
-    private long startTime = 0;
-    private long millis;
+    private double startTime = 0;
+    private double millis;
     private int seconds;
     private int minutes;
-    private long previousRoundEndTime = 0;
+    private double previousRoundEndTime = 0;
     private int finalMinute = 5;
     private int randomTime;
-    private long hitStartTime;
-    private int numberOfTimesToHit = 20;
-    private ArrayList<Long> randomTimesToHitArrayList = new ArrayList<>();
-    private ArrayList<Long> reactionTimesArrayList = new ArrayList<>();
+    private double hitStartTime;
+    private int numberOfTimesToHit;
+    private double averageReactionTime;
+    private ArrayList<Double> randomTimesToHitArrayList = new ArrayList<>();
+    private ArrayList<Double> reactionTimesArrayList = new ArrayList<>();
 
     Random r = new Random();
 
@@ -44,42 +45,54 @@ public class ReactionTimeTracker{
 
         for(int randomTimeToHitIter =0; randomTimeToHitIter < numberOfTimesToHit; randomTimeToHitIter++) {
             randomTime = r.nextInt(6000) + 2000;
-            randomTimesToHitArrayList.add((long) randomTime);
+            randomTimesToHitArrayList.add((double) randomTime);
         }
 
     }
 
-    public long getRandomTime(int randomTimeIter){
+    public double getRandomTime(int randomTimeIter){
 
         return randomTimesToHitArrayList.get(randomTimeIter);
 
     }
 
-    public ArrayList<Long> getRandomTimeArrayList(){
+    public ArrayList<Double> getRandomTimeArrayList(){
 
         return randomTimesToHitArrayList;
 
     }
 
-    public long getStartTime(){
+    public void setNumberOfTimesToHit(int timesToHit){
+
+        numberOfTimesToHit = timesToHit;
+
+    }
+
+    public int getNumberOfTimesToHit() {
+
+        return numberOfTimesToHit;
+
+    }
+
+    public double getStartTime(){
 
         return startTime;
 
     }
 
-    public void setStartTime(long startTimeInput){
+    public void setStartTime(double startTimeInput){
 
         startTime = startTimeInput;
 
     }
 
-    public long getMillis(){
+    public double getMillis(){
 
         return millis;
 
     }
 
-    public void setMillis(long millisInput){
+    public void setMillis(double millisInput){
 
         millis = millisInput;
 
@@ -110,13 +123,13 @@ public class ReactionTimeTracker{
 
     }
 
-    public long getPreviousRoundEndTime(){
+    public double getPreviousRoundEndTime(){
 
         return previousRoundEndTime;
 
     }
 
-    public void setPreviousRoundEndTime(long inputPreviousRoundEndTime){
+    public void setPreviousRoundEndTime(double inputPreviousRoundEndTime){
 
         previousRoundEndTime = inputPreviousRoundEndTime;
 
@@ -134,27 +147,40 @@ public class ReactionTimeTracker{
 
     }
 
-    public long getHitStartTime(){
+    public double getHitStartTime(){
 
         return hitStartTime;
 
     }
 
-    public void recordReactionTime(){
+    public ArrayList<Double> getReactionTimeArrayList(){
+
+        return reactionTimesArrayList;
+
+    }
+
+    public void addReactionTime(){
 
         reactionTimesArrayList.add(getMillis());
 
     }
 
-    public long calculateMeanReactionTime(){
+    public void calculateMeanReactionTime(){
 
-        long calcMeanSum = reactionTimesArrayList.get(0);
-        for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
+        double calcMeanSum = reactionTimesArrayList.get(0);
+        for(int rTListIter = 0; rTListIter < reactionTimesArrayList.size(); rTListIter++){
             calcMeanSum = calcMeanSum + reactionTimesArrayList.get(rTListIter);
         }
-
-        return calcMeanSum;
+        calcMeanSum = calcMeanSum/reactionTimesArrayList.size();
+        setAverageReactionTime(calcMeanSum);
 
     }
 
+    public double getAverageReactionTime() {
+        return averageReactionTime;
+    }
+
+    public void setAverageReactionTime(double averageReactionTime) {
+        this.averageReactionTime = averageReactionTime;
+    }
 }

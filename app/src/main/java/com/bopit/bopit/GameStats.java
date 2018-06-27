@@ -1,13 +1,13 @@
 package com.bopit.bopit;
 
-public class Game {
+public class GameStats {
 
-    private String statsKey;
+    private String gameKey;
     private String username;
     private double avg;
     private double best;
 
-    public Game(String name, double avg, double best){
+    public GameStats(String name, double avg, double best){
 
         this.username = name;
         this.avg = avg;
@@ -31,11 +31,11 @@ public class Game {
         this.username = highScorerName;
     }
 
-    public String getStatsKey() {
-        return statsKey;
+    public String getGameKey() {
+        return gameKey;
     }
 
-    public void setStatsKey(String statsKey) {
-        this.statsKey = statsKey;
+    public void setGameKey(String statsKey) {
+        this.gameKey = statsKey;
     }
 }
