@@ -20,7 +20,6 @@
         </activity>
         <activity android:name=".GameActivity"></activity>
         <activity android:name=".StatsActivity"></activity>
-        <activity android:name=".UsernamePromptActivity"></activity>
     </application>
 
 </manifest>

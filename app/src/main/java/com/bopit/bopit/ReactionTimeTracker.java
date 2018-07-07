@@ -1,7 +1,5 @@
 package com.bopit.bopit;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,17 +9,18 @@ import java.util.Random;
 
 public class ReactionTimeTracker{
 
-    private double startTime = 0;
-    private double millis;
-    private int seconds;
-    private int minutes;
+    private double startTime = 0; //start of the game instance
+    private double millis; //system ms
+    private int seconds; // system sec
+    private int minutes; // system minutea
     private double previousRoundEndTime = 0;
-    private int finalMinute = 5;
-    private int randomTime;
-    private double hitStartTime;
-    private int numberOfTimesToHit;
-    private double averageReactionTime;
+    private int randomTime; // random time generated to get random difference between start of next round and previous round end
+    private double hitStartTime; // actual start of next round time
+    private int numberOfTimesToHit; // integer of total rounds
+    private double averageReactionTime; // average reaction time of user
+    private ArrayList<String> missRecordArrayList = new ArrayList<>(); //hit-miss record array list
     private ArrayList<Double> randomTimesToHitArrayList = new ArrayList<>();
+    private ArrayList<Double> startOfRoundArrayList = new ArrayList<>();
     private ArrayList<Double> reactionTimesArrayList = new ArrayList<>();
 
     Random r = new Random();
@@ -44,8 +43,10 @@ public class ReactionTimeTracker{
     public void setRandomTimesToHit(){
 
         for(int randomTimeToHitIter =0; randomTimeToHitIter < numberOfTimesToHit; randomTimeToHitIter++) {
-            randomTime = r.nextInt(6000) + 2000;
+
+            randomTime = r.nextInt(3000) + 1000;
             randomTimesToHitArrayList.add((double) randomTime);
+
         }
 
     }
@@ -135,15 +136,10 @@ public class ReactionTimeTracker{
 
     }
 
-    public int getFinalMinute(){
-
-        return finalMinute;
-
-    }
-
     public void setHitStartTime(int randomTimeIter){
 
         hitStartTime = getRandomTime(randomTimeIter)+getPreviousRoundEndTime();
+        recordStartOfRound();
 
     }
 
@@ -167,20 +163,73 @@ public class ReactionTimeTracker{
 
     public void calculateMeanReactionTime(){
 
-        double calcMeanSum = reactionTimesArrayList.get(0);
-        for(int rTListIter = 0; rTListIter < reactionTimesArrayList.size(); rTListIter++){
-            calcMeanSum = calcMeanSum + reactionTimesArrayList.get(rTListIter);
+        //account for user missing button clicks
+
+        int trackSuccesses = 0;
+        double calcMeanSum = reactionTimesArrayList.get(0) - startOfRoundArrayList.get(0);
+        for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
+
+            if(missRecordArrayList.get(rTListIter) == "hit"){
+                calcMeanSum = calcMeanSum + reactionTimesArrayList.get(rTListIter) - startOfRoundArrayList.get(rTListIter-1);
+                trackSuccesses++;
+            } else {
+
+            }
+
         }
-        calcMeanSum = calcMeanSum/reactionTimesArrayList.size();
+        calcMeanSum = calcMeanSum/trackSuccesses;
         setAverageReactionTime(calcMeanSum);
 
     }
 
     public double getAverageReactionTime() {
+
         return averageReactionTime;
+
     }
 
     public void setAverageReactionTime(double averageReactionTime) {
+
         this.averageReactionTime = averageReactionTime;
+
     }
+
+    public ArrayList<String> getMissRecordArrayList() {
+
+        return missRecordArrayList;
+
+    }
+
+    public void setMissRecordArrayList(ArrayList<String> missRecordArrayList) {
+
+        this.missRecordArrayList = missRecordArrayList;
+
+    }
+
+    public void recordMiss() {
+
+        missRecordArrayList.add("miss");
+
+    }
+
+    public void recordHit() {
+
+        missRecordArrayList.add("hit");
+
+    }
+
+    public ArrayList<Double> getStartOfRoundArrayList() {
+        return startOfRoundArrayList;
+    }
+
+    public void setStartOfRoundArrayList(ArrayList<Double> startOfRoundArrayList) {
+        this.startOfRoundArrayList = startOfRoundArrayList;
+    }
+
+    public void recordStartOfRound () {
+
+        startOfRoundArrayList.add(hitStartTime);
+
+    }
+
 }

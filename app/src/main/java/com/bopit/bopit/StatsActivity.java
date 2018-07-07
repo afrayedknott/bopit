@@ -1,5 +1,6 @@
 package com.bopit.bopit;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,13 +22,15 @@ import java.util.Random;
 public class StatsActivity extends AppCompatActivity {
 
     //data properties
-    private User user;
-    private GameStats gameStats;
+    private AppInstall appInstall;
+
+    //data saving tools as properties
+    private SharedPreferences.Editor editor;
     private FirebaseFirestore firestoreDatabase;
     private CollectionReference userCollectionRef;
     private CollectionReference gameStatsCollectionRef;
-    private StatsRecyclerViewAdapter statsRecyclerViewAdapter;
-    private ArrayList<GameStats> gameStatsArrayList = new ArrayList<GameStats>(0);
+
+    //View related
     private RecyclerView highScoresRecyclerView;
 
     @Override
@@ -36,22 +39,31 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
+        //check SharedPreferences for UUID of app install
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = pref.edit();
+        if(pref.getString("appUUID","")==""){
+            appInstall = new AppInstall();
+            editor.putString("appUUID", appInstall.getInstallID());
+            editor.apply();
+        } else {
+            appInstall.setInstallID(pref.getString("appUUID",""));
+        }
 
+        //check if StatsActivity came from Game or Home
+        if(getIntent()!=null) {
+            appInstall.setPreviousAverage(getIntent().getDoubleExtra("average",0));
+        } else {
+        }
+
+
+        //save to cloud
         setUpFirestoreDB();
-        loadFirestoreData();
+//        loadFirestoreData();
 /*        generateTestData();*/
 /*        setUpRecyclerView();*/
 
     }
-
-/*    private void setUpRecyclerView() {
-
-        highScoresRecyclerView = findViewById(R.id.highscores_recyclerview);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        highScoresRecyclerView.setLayoutManager(mLayoutManager);
-        attachRecyclerViewAdapter();
-
-    }*/
 
     private void setUpFirestoreDB() {
 
@@ -61,7 +73,7 @@ public class StatsActivity extends AppCompatActivity {
 
     }
 
-    private void loadFirestoreData() {
+/*    private void loadFirestoreData() {
 
         gameStatsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -72,14 +84,14 @@ public class StatsActivity extends AppCompatActivity {
                     GameStats gameStats =
                             new GameStats(
                                     querySnapshot.getString("username"),
-                                    querySnapshot.getLong("avg"),
-                                    querySnapshot.getLong("best"));
+                                    querySnapshot.getDouble("avg"),
+                                    querySnapshot.getDouble(("best"));
                     gameStats.setGameKey(querySnapshot.getId());
                     gameStatsArrayList.add(gameStats);
 
                 }
 
-                /*attachRecyclerViewAdapter();*/
+                *//*attachRecyclerViewAdapter();*//*
 
             }
 
@@ -94,30 +106,6 @@ public class StatsActivity extends AppCompatActivity {
 
         });
 
-    }
-
-    private void attachRecyclerViewAdapter() {
-
-        statsRecyclerViewAdapter = new StatsRecyclerViewAdapter(StatsActivity.this, gameStatsArrayList);
-        highScoresRecyclerView.setAdapter(statsRecyclerViewAdapter);
-
-    }
-
-    private void generateTestData() {
-
-        Random rNG = new Random();
-
-        for(int testDataIter = 0; testDataIter < 20; testDataIter++) {
-
-            gameStats = new GameStats("h", (double) 0.596, (double) 0.437);
-            gameStats.setUsername("joel");
-            gameStats.setAverage(Long.valueOf(rNG.nextInt(10000)));
-            gameStatsArrayList.add(gameStats);
-
-            Log.i("arraylist size", Integer.toString(gameStatsArrayList.size()));
-
-        }
-
-    }
+    }*/
 
 }

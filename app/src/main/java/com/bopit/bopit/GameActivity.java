@@ -17,12 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class GameActivity extends AppCompatActivity {
 
-    //Non-Button Views, declared Buttons above their Listeners
+    //Non-Button Views, I declared Buttons above their Listeners
     private TextView gameCountdownTextView;
+    private TextView completedGameTextView;
 
     // tells timer which random time to pull and counts each test
     private int rTTIter = 0;
-
     private int gameStartCountdownTime = 3;
 
     //properties related to running game
@@ -42,19 +42,10 @@ public class GameActivity extends AppCompatActivity {
 
             if (rTTIter > rTT.getNumberOfTimesToHit()-1) {
 
-                timerHandler.removeCallbacks(gameTimerRunnable);
-                restartGameButton.setText(R.string.str_button_restartgame);
-                rTT.calculateMeanReactionTime();
-                Log.i("avg", Double.toString(rTT.getAverageReactionTime()));
-
-
-
-                rTTIter = 0;
-                restartGameButton.setVisibility(View.VISIBLE);
+                completedGame();
 
             }
-
-            if (reactionButton.getVisibility() == View.INVISIBLE && rTT.getMillis() > rTT.getRandomTime(rTTIter) + rTT.getPreviousRoundEndTime()) {
+            if (reactionButton.getVisibility() == View.INVISIBLE && rTT.getMillis() > rTT.getHitStartTime()) {
 
                 // if clock's ms is greater than the randomized time plus 
                 rTT.setHitStartTime(rTTIter);
@@ -63,11 +54,15 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
-            if (reactionButton.getVisibility() == View.VISIBLE && rTT.getMillis() > rTT.getHitStartTime() + 1000) {
+            if (reactionButton.getVisibility() == View.VISIBLE && rTT.getMillis() > rTT.getHitStartTime() + 2000) {
 
-                rTT.getRandomTime(rTTIter);
                 rTT.setPreviousRoundEndTime(rTT.getMillis());
+                rTT.recordMiss();
+                rTT.addReactionTime();
+                Log.i("iter", Integer.toString(rTTIter));
+                Log.i("miss", "miss");
                 reactionButton.setVisibility(View.INVISIBLE);
+                rTTIter++;
 
             }
 
@@ -97,20 +92,19 @@ public class GameActivity extends AppCompatActivity {
                 timerHandler.removeCallbacks(gameStartCountdownRunnable);
                 rTT.setRandomTimesToHit();
                 timerHandler.post(gameTimerRunnable);
+                gameStartCountdownTime = 3;
 
             }
 
             gameCountdownTextView.setText(Integer.toString(gameStartCountdownTime));
             gameStartCountdownTime--;
-            Log.i("text", gameCountdownTextView.getText().toString());
-
 
         }
 
     };
 
     //Buttons section
-    private Button restartGameButton, reactionButton;
+    private Button restartGameButton, reactionButton, statsActivityButton;
     private RelativeLayout reactionButtonLayout;
     private FrameLayout.LayoutParams newButtonLayoutParam;
 
@@ -118,7 +112,7 @@ public class GameActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            startGame();
+            restartGame();
 
         }
 
@@ -128,13 +122,24 @@ public class GameActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            rTT.setPreviousRoundEndTime(rTT.getMillis());
             rTT.addReactionTime();
-            Log.i("reaction time",rTT.getReactionTimeArrayList().get(rTTIter).toString());
-            Log.i("index",Integer.toString(rTTIter));
             rTTIter++;
+            rTT.setHitStartTime(rTTIter);
+            Log.i("iter", Integer.toString(rTTIter));
+            Log.i("clicked", "button clicked");
+            rTT.recordHit();
             reactionButton.setVisibility(View.INVISIBLE);
             setRandomButtonLocation();
+
+        }
+
+    };
+
+    private View.OnClickListener statsActvityGameButtonListener = new View.OnClickListener() {
+
+        public void onClick(View V) {
+
+            startStatsActivity();
 
         }
 
@@ -148,35 +153,61 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         //Initializing the views
+        completedGameTextView = findViewById(R.id.textview_completedgame);
         gameCountdownTextView = findViewById(R.id.textview_startcountdown);
         restartGameButton = findViewById(R.id.button_restartgame);
         reactionButton = findViewById(R.id.button_reaction);
+        statsActivityButton = findViewById(R.id.button_stats);
 
         restartGameButton.setOnClickListener(restartGameButtonListener);
         reactionButton.setOnClickListener(reactionButtonListener);
+        statsActivityButton.setOnClickListener(statsActvityGameButtonListener);
 
         reactionButtonLayout = findViewById(R.id.parent_layout);
 
         //Initialize gameStats engine
         rTT = new ReactionTimeTracker();
-        rTT.setNumberOfTimesToHit(20);
-
         startGame();
+
     }
 
 
     private void startStatsActivity() {
 
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
+        statsIntent.putExtra("average", rTT.getAverageReactionTime());
         GameActivity.this.startActivity(statsIntent);
 
     }
 
     private void startGame() {
 
+        rTT.setNumberOfTimesToHit(20);
         rTT.setStartTime(System.currentTimeMillis());
-        timerHandler.postDelayed(gameStartCountdownRunnable, 0);
+        timerHandler.post(gameStartCountdownRunnable);
 
+    }
+
+    private void restartGame() {
+
+        restartGameButton.setVisibility(View.INVISIBLE);
+        completedGameTextView.setVisibility(View.INVISIBLE);
+        statsActivityButton.setVisibility(View.INVISIBLE);
+        resetLayout();
+        startGame();
+
+    }
+
+    private void completedGame() {
+
+        timerHandler.removeCallbacks(gameTimerRunnable);
+        rTT.calculateMeanReactionTime();
+        Log.i("avg", Double.toString(rTT.getAverageReactionTime()));
+        resetLayout();
+        rTTIter = 0;
+        restartGameButton.setVisibility(View.VISIBLE);
+        completedGameTextView.setVisibility(View.VISIBLE);
+        statsActivityButton.setVisibility(View.VISIBLE);
     }
 
     private void setRandomButtonLocation() {
@@ -185,6 +216,13 @@ public class GameActivity extends AppCompatActivity {
         newButtonLayoutParam = new FrameLayout.LayoutParams(reactionButtonLayout.getLayoutParams());
         randomButtonLocationGenerator.generateRandomMarginsForButton();
         newButtonLayoutParam.setMargins(randomButtonLocationGenerator.getRandomLeftMargin(), randomButtonLocationGenerator.getRandomTopMargin(),0,0);
+        reactionButtonLayout.setLayoutParams(newButtonLayoutParam);
+
+    }
+
+    private void resetLayout() {
+
+        newButtonLayoutParam.setMargins(0,0,0,0);
         reactionButtonLayout.setLayoutParams(newButtonLayoutParam);
 
     }
