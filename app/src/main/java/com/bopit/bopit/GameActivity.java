@@ -11,10 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 public class GameActivity extends AppCompatActivity {
 
     //Non-Button Views, I declared Buttons above their Listeners
@@ -22,11 +18,12 @@ public class GameActivity extends AppCompatActivity {
     private TextView completedGameTextView;
 
     // tells timer which random time to pull and counts each test
-    private int rTTIter = 0;
+    private int roundIter = 0;
     private int gameStartCountdownTime = 3;
 
     //properties related to running game
-    private ReactionTimeTracker rTT;
+    private Timer timer;
+    private GameEngine gameEngine;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
     // Clock running in background
@@ -36,33 +33,31 @@ public class GameActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            rTT.tickTocker();
+            timer.tickTocker();
             // ticks every 1000ms
             timerHandler.postDelayed(this, 0);
 
-            if (rTTIter > rTT.getNumberOfTimesToHit()-1) {
+            if (roundIter > gameEngine.getNumberOfTimesToHit()-1) {
 
                 completedGame();
 
             }
-            if (reactionButton.getVisibility() == View.INVISIBLE && rTT.getMillis() > rTT.getHitStartTime()) {
+            if (reactionButton.getVisibility() == View.INVISIBLE && timer.getMillis() > gameEngine.getStartOfRound(roundIter)) {
 
-                // if clock's ms is greater than the randomized time plus 
-                rTT.setHitStartTime(rTTIter);
+                // if clock's ms is greater than the randomized time plus
                 setRandomButtonLocation();
                 reactionButton.setVisibility(View.VISIBLE);
 
             }
 
-            if (reactionButton.getVisibility() == View.VISIBLE && rTT.getMillis() > rTT.getHitStartTime() + 2000) {
+            if (reactionButton.getVisibility() == View.VISIBLE && timer.getMillis() > gameEngine.getStartOfRound(roundIter)) {
 
-                rTT.setPreviousRoundEndTime(rTT.getMillis());
-                rTT.recordMiss();
-                rTT.addReactionTime();
-                Log.i("iter", Integer.toString(rTTIter));
+                gameEngine.recordMiss();
+                gameEngine.addReactionTime(timer.getMillis());
+                Log.i("iter", Integer.toString(roundIter));
                 Log.i("miss", "miss");
                 reactionButton.setVisibility(View.INVISIBLE);
-                rTTIter++;
+                roundIter++;
 
             }
 
@@ -78,7 +73,7 @@ public class GameActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            rTT.tickTocker();
+            timer.tickTocker();
             // ticks every 1000ms
             timerHandler.postDelayed(this, 1000);
 
@@ -90,7 +85,7 @@ public class GameActivity extends AppCompatActivity {
 
                 gameCountdownTextView.setVisibility(View.INVISIBLE);
                 timerHandler.removeCallbacks(gameStartCountdownRunnable);
-                rTT.setRandomTimesToHit();
+                gameEngine.setRandomTimesToHit();
                 timerHandler.post(gameTimerRunnable);
                 gameStartCountdownTime = 3;
 
@@ -122,12 +117,11 @@ public class GameActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            rTT.addReactionTime();
-            rTTIter++;
-            rTT.setHitStartTime(rTTIter);
-            Log.i("iter", Integer.toString(rTTIter));
+            gameEngine.addReactionTime(timer.getMillis());
+            roundIter++;
+            Log.i("iter", Integer.toString(roundIter));
             Log.i("clicked", "button clicked");
-            rTT.recordHit();
+            gameEngine.recordHit();
             reactionButton.setVisibility(View.INVISIBLE);
             setRandomButtonLocation();
 
@@ -166,24 +160,31 @@ public class GameActivity extends AppCompatActivity {
         reactionButtonLayout = findViewById(R.id.parent_layout);
 
         //Initialize gameStats engine
-        rTT = new ReactionTimeTracker();
+        timer = new Timer();
+        gameEngine = new GameEngine();
         startGame();
 
     }
 
+    //without this, timer continues to run after task manager closed
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timerHandler.removeCallbacks(gameTimerRunnable);
+    }
 
     private void startStatsActivity() {
 
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
-        statsIntent.putExtra("average", rTT.getAverageReactionTime());
+        statsIntent.putExtra("average", gameEngine.getAverageReactionTime());
         GameActivity.this.startActivity(statsIntent);
 
     }
 
     private void startGame() {
 
-        rTT.setNumberOfTimesToHit(20);
-        rTT.setStartTime(System.currentTimeMillis());
+        gameEngine.setNumberOfTimesToHit(20);
+        gameEngine.setGameStartTime(timer.getMillis());
         timerHandler.post(gameStartCountdownRunnable);
 
     }
@@ -201,10 +202,10 @@ public class GameActivity extends AppCompatActivity {
     private void completedGame() {
 
         timerHandler.removeCallbacks(gameTimerRunnable);
-        rTT.calculateMeanReactionTime();
-        Log.i("avg", Double.toString(rTT.getAverageReactionTime()));
+        gameEngine.calculateMeanReactionTime();
+        Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
         resetLayout();
-        rTTIter = 0;
+        roundIter = 0;
         restartGameButton.setVisibility(View.VISIBLE);
         completedGameTextView.setVisibility(View.VISIBLE);
         statsActivityButton.setVisibility(View.VISIBLE);

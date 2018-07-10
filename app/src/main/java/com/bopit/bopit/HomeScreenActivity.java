@@ -10,7 +10,7 @@ import android.widget.Button;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    private AppInstall appInstall;
+    private InstallProfile installProfile;
     private SharedPreferences.Editor editor;
 
     @Override

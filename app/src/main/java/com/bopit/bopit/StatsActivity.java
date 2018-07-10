@@ -1,28 +1,17 @@
 package com.bopit.bopit;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public class StatsActivity extends AppCompatActivity {
 
     //data properties
-    private AppInstall appInstall;
+    private InstallProfile installProfile;
 
     //data saving tools as properties
     private SharedPreferences.Editor editor;
@@ -43,16 +32,16 @@ public class StatsActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
         if(pref.getString("appUUID","")==""){
-            appInstall = new AppInstall();
-            editor.putString("appUUID", appInstall.getInstallID());
+            installProfile = new InstallProfile();
+            editor.putString("appUUID", installProfile.getInstallID());
             editor.apply();
         } else {
-            appInstall.setInstallID(pref.getString("appUUID",""));
+            installProfile.setInstallID(pref.getString("appUUID",""));
         }
 
         //check if StatsActivity came from Game or Home
         if(getIntent()!=null) {
-            appInstall.setPreviousAverage(getIntent().getDoubleExtra("average",0));
+            installProfile.setPreviousAverage(getIntent().getDoubleExtra("average",0));
         } else {
         }
 

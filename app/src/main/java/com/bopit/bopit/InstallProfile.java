@@ -6,7 +6,7 @@ import java.util.UUID;
 //This used to be called User, but I decided I want to minimize complexity for myself and users by
 // just tracking stats per install. It's not necessary to track across reinstalls or separate
 // devices for my purpose or user experience.
-public class AppInstall implements Serializable {
+public class InstallProfile implements Serializable {
 
     private String installID;
     private double installAverage;
@@ -14,7 +14,7 @@ public class AppInstall implements Serializable {
     private double previousAverage;
     private double previousBest;
 
-    public AppInstall() { createAndSetInstallID(); }
+    public InstallProfile() { createAndSetInstallID(); }
 
     public String getInstallID() {
         return installID;
