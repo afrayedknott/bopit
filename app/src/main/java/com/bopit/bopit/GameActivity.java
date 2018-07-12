@@ -35,14 +35,16 @@ public class GameActivity extends AppCompatActivity {
 
             timer.tickTocker();
             // ticks every 1000ms
-            timerHandler.postDelayed(this, 0);
+            timerHandler.postDelayed(this, 5);
 
+            //end of game
             if (roundIter > gameEngine.getNumberOfTimesToHit()-1) {
 
+                Log.i("finished", "fin");
                 completedGame();
 
-            }
-            if (reactionButton.getVisibility() == View.INVISIBLE && timer.getMillis() > gameEngine.getStartOfRound(roundIter)) {
+            } //start a round
+            else if (reactionButton.getVisibility() == View.INVISIBLE && System.currentTimeMillis() > gameEngine.getStartOfRound(roundIter)) {
 
                 // if clock's ms is greater than the randomized time plus
                 setRandomButtonLocation();
@@ -50,10 +52,15 @@ public class GameActivity extends AppCompatActivity {
 
             }
 
-            if (reactionButton.getVisibility() == View.VISIBLE && timer.getMillis() > gameEngine.getStartOfRound(roundIter)) {
+            //end a round in 2s if not already ended
+            else if (reactionButton.getVisibility() == View.VISIBLE && System.currentTimeMillis() > gameEngine.getEndOfRound(roundIter)) {
 
                 gameEngine.recordMiss();
-                gameEngine.addReactionTime(timer.getMillis());
+                gameEngine.addReactionTime(0);
+
+                Log.i("start", Double.toString(gameEngine.getStartOfRound(roundIter)));
+                Log.i("end", Double.toString(gameEngine.getEndOfRound(roundIter)));
+
                 Log.i("iter", Integer.toString(roundIter));
                 Log.i("miss", "miss");
                 reactionButton.setVisibility(View.INVISIBLE);
@@ -85,7 +92,6 @@ public class GameActivity extends AppCompatActivity {
 
                 gameCountdownTextView.setVisibility(View.INVISIBLE);
                 timerHandler.removeCallbacks(gameStartCountdownRunnable);
-                gameEngine.setRandomTimesToHit();
                 timerHandler.post(gameTimerRunnable);
                 gameStartCountdownTime = 3;
 
@@ -117,7 +123,7 @@ public class GameActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            gameEngine.addReactionTime(timer.getMillis());
+            gameEngine.addReactionTime(System.currentTimeMillis());
             roundIter++;
             Log.i("iter", Integer.toString(roundIter));
             Log.i("clicked", "button clicked");
@@ -161,7 +167,6 @@ public class GameActivity extends AppCompatActivity {
 
         //Initialize gameStats engine
         timer = new Timer();
-        gameEngine = new GameEngine();
         startGame();
 
     }
@@ -183,8 +188,10 @@ public class GameActivity extends AppCompatActivity {
 
     private void startGame() {
 
-        gameEngine.setNumberOfTimesToHit(20);
-        gameEngine.setGameStartTime(timer.getMillis());
+        gameEngine = new GameEngine();
+        gameEngine.setNumberOfTimesToHit(5);
+        gameEngine.setGameStartTime(System.currentTimeMillis());
+        gameEngine.setRandomTimesToHit();
         timerHandler.post(gameStartCountdownRunnable);
 
     }
@@ -195,17 +202,18 @@ public class GameActivity extends AppCompatActivity {
         completedGameTextView.setVisibility(View.INVISIBLE);
         statsActivityButton.setVisibility(View.INVISIBLE);
         resetLayout();
+        roundIter = 0;
         startGame();
 
     }
 
     private void completedGame() {
 
-        timerHandler.removeCallbacks(gameTimerRunnable);
+        Log.i("finished", "fin");
         gameEngine.calculateMeanReactionTime();
         Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
         resetLayout();
-        roundIter = 0;
+        timerHandler.removeCallbacks(gameTimerRunnable);
         restartGameButton.setVisibility(View.VISIBLE);
         completedGameTextView.setVisibility(View.VISIBLE);
         statsActivityButton.setVisibility(View.VISIBLE);
