@@ -178,14 +178,6 @@ public class GameActivity extends AppCompatActivity {
         timerHandler.removeCallbacks(gameTimerRunnable);
     }
 
-    private void startStatsActivity() {
-
-        Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
-        statsIntent.putExtra("average", gameEngine.getAverageReactionTime());
-        GameActivity.this.startActivity(statsIntent);
-
-    }
-
     private void startGame() {
 
         gameEngine = new GameEngine();
@@ -207,17 +199,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void completedGame() {
-
-        Log.i("finished", "fin");
-        gameEngine.calculateMeanReactionTime();
-        Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
-        resetLayout();
-        timerHandler.removeCallbacks(gameTimerRunnable);
-        restartGameButton.setVisibility(View.VISIBLE);
-        completedGameTextView.setVisibility(View.VISIBLE);
-        statsActivityButton.setVisibility(View.VISIBLE);
-    }
 
     private void setRandomButtonLocation() {
 
@@ -233,6 +214,30 @@ public class GameActivity extends AppCompatActivity {
 
         newButtonLayoutParam.setMargins(0,0,0,0);
         reactionButtonLayout.setLayoutParams(newButtonLayoutParam);
+
+    }
+
+    private void completedGame() {
+
+        Log.i("finished", "fin");
+        gameEngine.calculateTotalHits();
+        gameEngine.calculateMeanReactionTime();
+        gameEngine.calculateBestReactionTime();
+        Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
+        resetLayout();
+        timerHandler.removeCallbacks(gameTimerRunnable);
+        restartGameButton.setVisibility(View.VISIBLE);
+        completedGameTextView.setVisibility(View.VISIBLE);
+        statsActivityButton.setVisibility(View.VISIBLE);
+    }
+
+    private void startStatsActivity() {
+
+        Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
+        statsIntent.putExtra("average", gameEngine.getAverageReactionTime());
+        statsIntent.putExtra("best", gameEngine.getBestReactionTime());
+        statsIntent.putExtra("hits", gameEngine.getTotalHits());
+        GameActivity.this.startActivity(statsIntent);
 
     }
 

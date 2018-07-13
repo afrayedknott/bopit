@@ -10,9 +10,6 @@ import android.widget.Button;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    private InstallProfile installProfile;
-    private SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,17 +22,8 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
-    private Button statsButton, gameStartButton;
+    private Button gameStartButton, statsButton;
 
-    private View.OnClickListener statsButtonListener = new View.OnClickListener() {
-
-        public void onClick(View V) {
-
-            startStatsActivity();
-
-        }
-
-    };
     private View.OnClickListener gameStartButtonListener = new View.OnClickListener() {
 
         public void onClick(View V) {
@@ -46,17 +34,27 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     };
 
-    private void startStatsActivity() {
+    private View.OnClickListener statsButtonListener = new View.OnClickListener() {
 
-        Intent statsIntent = new Intent(HomeScreenActivity.this, StatsActivity.class);
-        HomeScreenActivity.this.startActivity(statsIntent);
+        public void onClick(View V) {
 
-    }
+            startStatsActivity();
+
+        }
+
+    };
 
     private void startGameActivity() {
 
         Intent gameStartIntent = new Intent(HomeScreenActivity.this, GameActivity.class);
         HomeScreenActivity.this.startActivity(gameStartIntent);
+
+    }
+
+    private void startStatsActivity() {
+
+        Intent statsIntent = new Intent(HomeScreenActivity.this, StatsActivity.class);
+        HomeScreenActivity.this.startActivity(statsIntent);
 
     }
 

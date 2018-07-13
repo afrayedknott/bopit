@@ -1,20 +1,36 @@
 package com.bopit.bopit;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameEngine {
 
+    //values
     private double gameStartTime; //start of the game instance
     private int randomizedTimeTillButtonVisible; // random time generated to get random difference between start of next round and previous round end
     private int numberOfTimesToHit; // integer of total rounds
-    private double averageReactionTime; // average reaction time of user
+    private double averageReactionTime; // average reaction time of user for the round
+    private double bestReactionTime; // best reaction time of user for the round
+    private int totalHits; // successful reactions count
     private ArrayList<String> missRecordArrayList = new ArrayList<>(); //hit-miss record array list
     private ArrayList<Double> startOfRoundArrayList = new ArrayList<>();
     private ArrayList<Double> endOfRoundArrayList = new ArrayList<>();
     private ArrayList<Double> reactionTimesArrayList = new ArrayList<>();
 
-    Random r = new Random();
+    //
+    Random r;
+
+    public GameEngine(){
+
+        r = new Random();
+
+    }
 
     /////////////////////////////////////////////////////////
     //section important for setting up or beginning of game
@@ -84,6 +100,9 @@ public class GameEngine {
         reactionTimesArrayList.add(millis);
 
     }
+    /////////////////////////////
+    // tallying up performance
+    /////////////////////////////
 
     public void calculateMeanReactionTime(){
 
@@ -96,14 +115,51 @@ public class GameEngine {
             if(missRecordArrayList.get(rTListIter) == "hit"){
                 calcMeanSum = calcMeanSum + reactionTimesArrayList.get(rTListIter) - startOfRoundArrayList.get(rTListIter);
                 trackSuccesses++;
-            } else {
-
             }
 
         }
         calcMeanSum = calcMeanSum/trackSuccesses;
         setAverageReactionTime(calcMeanSum);
 
+    }
+
+    public void calculateBestReactionTime(){
+
+        double best = reactionTimesArrayList.get(0) - startOfRoundArrayList.get(0);
+        double maybeBest = 3000;
+
+        for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
+
+            maybeBest = reactionTimesArrayList.get(rTListIter) - startOfRoundArrayList.get(rTListIter);
+
+            if(missRecordArrayList.get(rTListIter) == "hit" && maybeBest > best){ best = maybeBest; }
+
+        }
+
+        setBestReactionTime(best);
+
+    }
+
+    public void calculateTotalHits(){
+
+        int totalSuccessfulHits = 0;
+
+        for(int rTListIter = 0; rTListIter < missRecordArrayList.size(); rTListIter++){
+
+            if(missRecordArrayList.get(rTListIter) == "hit"){ totalSuccessfulHits++; }
+
+        }
+
+        setTotalHits(totalSuccessfulHits);
+
+    }
+
+    public double getBestReactionTime() {
+        return bestReactionTime;
+    }
+
+    public void setBestReactionTime(double bestReactionTime) {
+        this.bestReactionTime = bestReactionTime;
     }
 
     public double getAverageReactionTime() {
@@ -134,9 +190,11 @@ public class GameEngine {
 
     }
 
-    ////////////////////
-    // saving this mess
-    ///////////////////
+    public int getTotalHits() {
+        return totalHits;
+    }
 
-
+    public void setTotalHits(int totalHits) {
+        this.totalHits = totalHits;
+    }
 }

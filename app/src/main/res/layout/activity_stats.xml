@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_previous_title"
-        android:text="Average Reaction Time" />
+        android:text="Average Reaction Time (seconds)" />
 
     <TextView
         android:id="@+id/textview_previous_avg_time"
@@ -82,31 +82,31 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_previous_title"
-        android:text="0.87 seconds" />
+        android:text="0.8799" />
 
     <TextView
-        android:id="@+id/textview_previous_fastest_subtitle"
+        android:id="@+id/textview_previous_best_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_previous_avg_subtitle"
-        android:text="Fastest Reaction time"
+        android:text="Best Reaction Time (seconds)"
         android:layout_marginBottom="15dp"/>
 
     <TextView
-        android:id="@+id/textview_previous_fastest_time"
+        android:id="@+id/textview_previous_best_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_previous_avg_subtitle"
-        android:text="0.58 seconds" />
+        android:text="0.5805" />
 
     <TextView
         android:id="@+id/textview_pb_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:layout_below="@+id/textview_previous_fastest_subtitle"
+        android:layout_below="@+id/textview_previous_best_subtitle"
         android:text="Personal Best"
         android:layout_marginBottom="5dp"/>
 
@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_pb_title"
-        android:text="Average Reaction Time" />
+        android:text="Average Reaction Time (seconds)" />
 
     <TextView
         android:id="@+id/textview_pb_avg_time"
@@ -124,23 +124,31 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_pb_title"
-        android:text="0.64 seconds" />
+        android:text="0.6499" />
 
     <TextView
-        android:id="@+id/textview_pb_fastest_title"
+        android:id="@+id/textview_pb_best_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_pb_avg_subtitle"
-        android:text="Fastest Reaction time" />
+        android:text="Best Reaction Time (seconds)"
+        android:layout_marginBottom="15dp"/>
 
     <TextView
-        android:id="@+id/textview_pb_fastest_time"
+        android:id="@+id/textview_pb_best_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_pb_avg_subtitle"
-        android:text="0.47 seconds" />
+        android:text="0.4707" />
 
+    <Button
+        android:id="@+id/button_resetstats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_button_resetstats"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
