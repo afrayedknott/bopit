@@ -95,8 +95,8 @@ public class InstallProfile implements Serializable {
 
     public void checkAndSetBest(double best) {
 
-        if(getPreviousBest() > best){ this.previousBest = best; }
-        if(getInstallBest() > best){ this.installBest = best; }
+        if(getPreviousBest() > best){ setPreviousBest(best); }
+        if(getInstallBest() > best){ setInstallBest(best); }
 
     }
 

@@ -100,6 +100,13 @@ public class GameEngine {
         reactionTimesArrayList.add(millis);
 
     }
+
+    public double getReactionTime(int roundIter){
+
+        return reactionTimesArrayList.get(roundIter);
+
+    }
+
     /////////////////////////////
     // tallying up performance
     /////////////////////////////
@@ -132,7 +139,7 @@ public class GameEngine {
 
             maybeBest = reactionTimesArrayList.get(rTListIter) - startOfRoundArrayList.get(rTListIter);
 
-            if(missRecordArrayList.get(rTListIter) == "hit" && maybeBest > best){ best = maybeBest; }
+            if(missRecordArrayList.get(rTListIter) == "hit" && maybeBest < best){ best = maybeBest; }
 
         }
 

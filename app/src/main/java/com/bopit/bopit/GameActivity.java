@@ -57,10 +57,6 @@ public class GameActivity extends AppCompatActivity {
 
                 gameEngine.recordMiss();
                 gameEngine.addReactionTime(0);
-
-                Log.i("start", Double.toString(gameEngine.getStartOfRound(roundIter)));
-                Log.i("end", Double.toString(gameEngine.getEndOfRound(roundIter)));
-
                 Log.i("iter", Integer.toString(roundIter));
                 Log.i("miss", "miss");
                 reactionButton.setVisibility(View.INVISIBLE);
@@ -124,8 +120,9 @@ public class GameActivity extends AppCompatActivity {
         public void onClick(View V) {
 
             gameEngine.addReactionTime(System.currentTimeMillis());
-            roundIter++;
+            Log.i("reaction", Double.toString(gameEngine.getReactionTime(roundIter) - gameEngine.getStartOfRound(roundIter)));
             Log.i("iter", Integer.toString(roundIter));
+            roundIter++;
             Log.i("clicked", "button clicked");
             gameEngine.recordHit();
             reactionButton.setVisibility(View.INVISIBLE);
@@ -181,7 +178,7 @@ public class GameActivity extends AppCompatActivity {
     private void startGame() {
 
         gameEngine = new GameEngine();
-        gameEngine.setNumberOfTimesToHit(5);
+        gameEngine.setNumberOfTimesToHit(10);
         gameEngine.setGameStartTime(System.currentTimeMillis());
         gameEngine.setRandomTimesToHit();
         timerHandler.post(gameStartCountdownRunnable);
@@ -224,6 +221,8 @@ public class GameActivity extends AppCompatActivity {
         gameEngine.calculateMeanReactionTime();
         gameEngine.calculateBestReactionTime();
         Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
+        Log.i("best", Double.toString(gameEngine.getBestReactionTime()));
+        resetLayout();
         resetLayout();
         timerHandler.removeCallbacks(gameTimerRunnable);
         restartGameButton.setVisibility(View.VISIBLE);
