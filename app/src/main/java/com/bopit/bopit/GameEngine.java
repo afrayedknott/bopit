@@ -17,7 +17,6 @@ public class GameEngine {
     private int numberOfTimesToHit; // integer of total rounds
     private double averageReactionTime; // average reaction time of user for the round
     private double bestReactionTime; // best reaction time of user for the round
-    private int totalHits; // successful reactions count
     private ArrayList<String> missRecordArrayList = new ArrayList<>(); //hit-miss record array list
     private ArrayList<Double> startOfRoundArrayList = new ArrayList<>();
     private ArrayList<Double> endOfRoundArrayList = new ArrayList<>();
@@ -147,20 +146,6 @@ public class GameEngine {
 
     }
 
-    public void calculateTotalHits(){
-
-        int totalSuccessfulHits = 0;
-
-        for(int rTListIter = 0; rTListIter < missRecordArrayList.size(); rTListIter++){
-
-            if(missRecordArrayList.get(rTListIter) == "hit"){ totalSuccessfulHits++; }
-
-        }
-
-        setTotalHits(totalSuccessfulHits);
-
-    }
-
     public double getBestReactionTime() {
         return bestReactionTime;
     }
@@ -197,11 +182,4 @@ public class GameEngine {
 
     }
 
-    public int getTotalHits() {
-        return totalHits;
-    }
-
-    public void setTotalHits(int totalHits) {
-        this.totalHits = totalHits;
-    }
 }

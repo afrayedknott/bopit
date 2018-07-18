@@ -1,14 +1,11 @@
 package com.bopit.bopit;
 
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class StatsActivity extends AppCompatActivity {
@@ -18,17 +15,13 @@ public class StatsActivity extends AppCompatActivity {
 
     //data saving tools as properties
     private FirebaseFirestore firestoreDatabase;
-    private CollectionReference userCollectionRef;
-    private CollectionReference gameStatsCollectionRef;
 
     // Views
+    private TextView installPercentileTV;
     private TextView previousBestTV;
     private TextView previousAverageTV;
     private TextView installBestTV;
     private TextView installAverageTV;
-
-    //View related
-    private RecyclerView highScoresRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +29,19 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        //bring in the Intent data if it exists
-        installProfile = new InstallProfile(this);
+        setUpFirestoreDB();
 
+        installProfile = new InstallProfile(this, firestoreDatabase); //includes reading internal
+
+        //bring in the Intent data if it exists
         if(getIntent().getExtras() != null) {
 
-            int tempTotalHits = getIntent().getIntExtra("hits", 0);
             double tempAverage = getIntent().getDoubleExtra("average", 3000);
             double tempBest = getIntent().getDoubleExtra("best", 3000);
-            installProfile.compileStatsUponCompletedGame(tempTotalHits, tempAverage, tempBest);
+            installProfile.updateStatsUponGameCompletion(tempAverage, tempBest);
             installProfile.saveDataInternal(this);
+            installProfile.writeToFirestore();
+            installProfile.getFirestoreStats();
 
         }
 
@@ -53,18 +49,21 @@ public class StatsActivity extends AppCompatActivity {
         resetStatsButton = findViewById(R.id.button_resetstats);
         resetStatsButton.setOnClickListener(resetStatsButtonListener);
 
+        installPercentileTV = findViewById(R.id.textview_stats_pct);
         previousAverageTV = findViewById(R.id.textview_previous_avg_time);
         previousBestTV = findViewById(R.id.textview_previous_best_time);
         installAverageTV = findViewById(R.id.textview_pb_avg_time);
         installBestTV = findViewById(R.id.textview_pb_best_time);
 
+        installPercentileTV.setText(String.format("%2.2f%%", (installProfile.getPercentile()/1000)));
         previousAverageTV.setText(String.format("%.4f", (installProfile.getPreviousAverage()/1000)));
         previousBestTV.setText(String.format("%.4f", (installProfile.getPreviousBest()/1000)));
         installAverageTV.setText(String.format("%.4f", (installProfile.getInstallAverage()/1000)));
         installBestTV.setText(String.format("%.4f", (installProfile.getInstallBest()/1000)));
 
         //save to cloud
-        setUpFirestoreDB();
+        installProfile.getFirestoreStats();
+
 //        loadFirestoreData();
 /*        generateTestData();*/
 /*        setUpRecyclerView();*/
@@ -89,6 +88,7 @@ public class StatsActivity extends AppCompatActivity {
         installProfile.setInstallBest(3000);
         installProfile.setPreviousAverage(3000);
         installProfile.setPreviousBest(3000);
+        installProfile.setPercentile(0);
         installProfile.saveDataInternal(this);
 
     }
@@ -96,10 +96,9 @@ public class StatsActivity extends AppCompatActivity {
     private void setUpFirestoreDB() {
 
         firestoreDatabase = FirebaseFirestore.getInstance();
-        gameStatsCollectionRef = firestoreDatabase.collection("gamestats");
-        userCollectionRef = firestoreDatabase.collection("users");
 
     }
+
 
 /*    private void loadFirestoreData() {
 

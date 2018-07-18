@@ -2,6 +2,10 @@ package com.bopit.bopit;
 
 import android.content.Context;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -23,10 +27,15 @@ public class InstallProfile implements Serializable {
     private double installBest;
     private double previousAverage;
     private double previousBest;
-    private double lifetimeAverage;
-    private int successfulRoundsPlayed;
+    private double betterThanInstallProfilesCount;
+    private double allInstallProfilesCount;
+    private double percentile;
 
-    public InstallProfile(Context context) {
+    private FirebaseFirestore mFirestoreInstance;
+    private DocumentReference installProfileDocumentRef;
+    private DocumentReference firestoreStatsRef;
+
+    public InstallProfile(Context context, FirebaseFirestore mFirestoreInstance) {
 
         File file = new File(context.getFilesDir(), INSTALL_PROFILE_FILE_NAME);
         if(file.exists()) {
@@ -37,8 +46,11 @@ public class InstallProfile implements Serializable {
             installBest = 3000;
             previousAverage = 3000;
             previousBest = 3000;
-            successfulRoundsPlayed = 0;
+            percentile = 0;
         }
+
+        installProfileDocumentRef = mFirestoreInstance.collection("installProfiles").document(getInstallID());
+        firestoreStatsRef = mFirestoreInstance.collection("firestoreStats").document("stats");
 
     }
 
@@ -47,6 +59,14 @@ public class InstallProfile implements Serializable {
     public String getInstallID() { return installID; }
 
     public void setInstallID(String installUUID) { this.installID = installUUID; }
+
+    public double getPercentile() {
+        return percentile;
+    }
+
+    public void setPercentile(double percentile) {
+        this.percentile = percentile;
+    }
 
     public double getInstallAverage() { return installAverage; }
 
@@ -64,25 +84,10 @@ public class InstallProfile implements Serializable {
 
     public void setPreviousBest(double best) { this.previousBest = best;}
 
-    public int getSuccessfulRoundsPlayed() { return successfulRoundsPlayed; }
+    public void updateStatsUponGameCompletion(double average, double best) {
 
-    public void setSuccessfulRoundsPlayed(int successfulRoundsPlayed) {
-
-        this.successfulRoundsPlayed = this.successfulRoundsPlayed + successfulRoundsPlayed;
-
-    }
-
-    public void compileStatsUponCompletedGame(int totalHits, double average, double best) {
-
-        sumAndsetTotalHits(totalHits);
         checkAndSetAverage(average);
         checkAndSetBest(best);
-
-    }
-
-    public void sumAndsetTotalHits(int totalHits){
-
-        this.successfulRoundsPlayed = this.successfulRoundsPlayed + totalHits;
 
     }
 
@@ -153,5 +158,76 @@ public class InstallProfile implements Serializable {
         setPreviousBest(temp.getPreviousBest());
 
     }
+
+    public void writeToFirestore(){
+
+        installProfileDocumentRef.collection("installProfiles").document(getInstallID()).set(this);
+
+    }
+
+    public void getFirestoreStats(){
+
+        firestoreStatsRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                setAllInstallProfilesCount(documentSnapshot.getDouble("totalInstallProfilesCount"));
+            }
+        });
+
+        installProfileDocumentRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                setBetterThanInstallProfilesCount(documentSnapshot.toObject(InstallProfile.class).betterThanInstallProfilesCount);
+            }
+        });
+
+        setPercentile(getBetterThanInstallProfilesCount()/getAllInstallProfilesCount());
+
+    }
+
+    public double getBetterThanInstallProfilesCount() {
+        return betterThanInstallProfilesCount;
+    }
+
+    public void setBetterThanInstallProfilesCount(double betterThanInstallProfilesCount) {
+        this.betterThanInstallProfilesCount = betterThanInstallProfilesCount;
+    }
+
+    public double getAllInstallProfilesCount() {
+        return allInstallProfilesCount;
+    }
+
+    public void setAllInstallProfilesCount(double allInstallProfilesCount) {
+        this.allInstallProfilesCount = allInstallProfilesCount;
+    }
+
+    /*public Task<Void> writeAndReadInstallProfile(){
+
+        mFirestoreInstance.runTransaction(new Transaction.Function<Void>() {
+            @Override
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot snapshot = transaction.get(installProfileDocumentRef);
+                setPercentile(snapshot.getDouble("installPercentile"));
+                setInstallAverage(snapshot.getDouble("installAverage"));
+
+                transaction.update(installProfileDocumentRef,);
+
+                // Success
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "Transaction success!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Transaction failure.", e);
+                    }
+                });
+
+    }*/
 
 }

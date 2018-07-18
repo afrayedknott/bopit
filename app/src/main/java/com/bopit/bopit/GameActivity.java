@@ -35,7 +35,7 @@ public class GameActivity extends AppCompatActivity {
 
             timer.tickTocker();
             // ticks every 1000ms
-            timerHandler.postDelayed(this, 5);
+            timerHandler.postDelayed(this, 0);
 
             //end of game
             if (roundIter > gameEngine.getNumberOfTimesToHit()-1) {
@@ -217,7 +217,6 @@ public class GameActivity extends AppCompatActivity {
     private void completedGame() {
 
         Log.i("finished", "fin");
-        gameEngine.calculateTotalHits();
         gameEngine.calculateMeanReactionTime();
         gameEngine.calculateBestReactionTime();
         Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
@@ -235,7 +234,6 @@ public class GameActivity extends AppCompatActivity {
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra("average", gameEngine.getAverageReactionTime());
         statsIntent.putExtra("best", gameEngine.getBestReactionTime());
-        statsIntent.putExtra("hits", gameEngine.getTotalHits());
         GameActivity.this.startActivity(statsIntent);
 
     }
