@@ -1,0 +1,25 @@
+[debug] [2018-07-19T20:40:49.650Z] ----------------------------------------------------------------------
+[debug] [2018-07-19T20:40:49.653Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\redna\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase deploy --only functions --debug
+[debug] [2018-07-19T20:40:49.654Z] CLI Version:   3.19.3
+[debug] [2018-07-19T20:40:49.654Z] Platform:      win32
+[debug] [2018-07-19T20:40:49.654Z] Node Version:  v8.11.3
+[debug] [2018-07-19T20:40:49.655Z] Time:          Thu Jul 19 2018 13:40:49 GMT-0700 (Pacific Daylight Time)
+[debug] [2018-07-19T20:40:49.655Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-07-19T20:40:49.668Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-07-19T20:40:49.669Z] > authorizing via signed-in user
+[debug] [2018-07-19T20:40:49.671Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/bopit-9de47  
+  
+ Thu Jul 19 2018 13:40:49 GMT-0700 (Pacific Daylight Time)
+[debug] [2018-07-19T20:40:50.049Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-19T20:40:50.050Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/bopit-9de47/tokens  
+  
+ Thu Jul 19 2018 13:40:50 GMT-0700 (Pacific Daylight Time)
+[debug] [2018-07-19T20:40:50.473Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'bopit-9de47'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "functions" run lint
+[error] 
+[error] Error: functions predeploy error: Command terminated with non-zero exit code2
