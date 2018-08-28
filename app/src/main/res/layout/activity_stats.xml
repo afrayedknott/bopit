@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="30dp"
-    android:layout_marginBottom="30dp"
-    android:layout_marginLeft="30dp"
-    android:layout_marginRight="30dp"
+    android:paddingTop="30dp"
+    android:paddingBottom="30dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     tools:context="com.bopit.bopit.StatsActivity">
 
     <TextView
@@ -16,15 +17,18 @@
         android:layout_height="wrap_content"
         android:text="You're better than"
         android:layout_alignParentTop="true"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_stats_pct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="30dp"
         android:gravity="center"
         android:layout_below="@+id/textview_stats_flavor1"
-        android:text="56%" />
+        android:text="56%"
+        android:textColor="@color/colorBlueText"/>
 
     <TextView
         android:id="@+id/textview_stats_flavor2"
@@ -33,29 +37,42 @@
         android:gravity="center"
         android:layout_below="@+id/textview_stats_pct"
         android:layout_marginBottom="20dp"
-        android:text="Of the players!"/>
+        android:text="Of the players!"
+        android:textColor="@color/colorWhiteText"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_settings"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_toLeftOf="@+id/button_restartgame"
+        android:layout_toLeftOf="@+id/button_gamerestart"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_settings"
+        android:scaleType="centerInside"
+        android:background="@null"
         android:layout_below="@+id/textview_stats_flavor2"
         android:layout_marginBottom="50dp"/>
 
-    <Button
-        android:id="@+id/button_restartgame"
+    <ImageButton
+        android:id="@+id/button_gamerestart"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_restart"
+        android:scaleType="centerInside"
+        android:background="@null"
         android:layout_below="@+id/textview_stats_flavor2"
         android:layout_marginBottom="50dp"/>
 
-    <Button
-        android:id="@+id/button_list"
+    <ImageButton
+        android:id="@+id/button_stats"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_toRightOf="@+id/button_restartgame"
+        android:layout_toRightOf="@+id/button_gamerestart"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_stats"
+        android:scaleType="centerInside"
+        android:background="@null"
         android:layout_below="@+id/textview_stats_flavor2"
         android:layout_marginBottom="50dp"/>
 
@@ -64,9 +81,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:layout_below="@+id/button_restartgame"
+        android:layout_below="@+id/button_gamerestart"
         android:text="Game Stats"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorBlueText"/>
 
     <TextView
         android:id="@+id/textview_previous_avg_subtitle"
@@ -74,7 +92,8 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_previous_title"
-        android:text="Average Reaction Time (seconds)" />
+        android:text="Average Reaction Time (seconds)"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_previous_avg_time"
@@ -82,7 +101,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_previous_title"
-        android:text="0.8799" />
+        android:text="0.8799"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_previous_best_subtitle"
@@ -91,7 +111,8 @@
         android:gravity="left"
         android:layout_below="@+id/textview_previous_avg_subtitle"
         android:text="Best Reaction Time (seconds)"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_previous_best_time"
@@ -99,7 +120,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_previous_avg_subtitle"
-        android:text="0.5805" />
+        android:text="0.5805"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_pb_title"
@@ -108,7 +130,8 @@
         android:gravity="left"
         android:layout_below="@+id/textview_previous_best_subtitle"
         android:text="Personal Best"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorBlueText"/>
 
     <TextView
         android:id="@+id/textview_pb_avg_subtitle"
@@ -116,7 +139,8 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_below="@+id/textview_pb_title"
-        android:text="Average Reaction Time (seconds)" />
+        android:text="Average Reaction Time (seconds)"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_pb_avg_time"
@@ -124,7 +148,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_pb_title"
-        android:text="0.6499" />
+        android:text="0.6499"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_pb_best_subtitle"
@@ -133,7 +158,8 @@
         android:gravity="left"
         android:layout_below="@+id/textview_pb_avg_subtitle"
         android:text="Best Reaction Time (seconds)"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorWhiteText"/>
 
     <TextView
         android:id="@+id/textview_pb_best_time"
@@ -141,7 +167,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:layout_below="@+id/textview_pb_avg_subtitle"
-        android:text="0.4707" />
+        android:text="0.4707"
+        android:textColor="@color/colorWhiteText"/>
 
     <Button
         android:id="@+id/button_resetstats"
@@ -149,6 +176,7 @@
         android:layout_height="wrap_content"
         android:text="@string/str_button_resetstats"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        />
 
 </RelativeLayout>

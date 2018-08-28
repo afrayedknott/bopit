@@ -2,18 +2,24 @@ package com.bopit.bopit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class HomeScreenActivity extends AppCompatActivity {
+
+    private TextView appTitle;
+    private ImageButton gameStartButton, statsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
+        this.getSupportActionBar().hide();
 
         gameStartButton = findViewById(R.id.button_gamestart);
         gameStartButton.setOnClickListener(gameStartButtonListener);
@@ -21,8 +27,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         statsButton.setOnClickListener(statsButtonListener);
 
     }
-
-    private Button gameStartButton, statsButton;
 
     private View.OnClickListener gameStartButtonListener = new View.OnClickListener() {
 

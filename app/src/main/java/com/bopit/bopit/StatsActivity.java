@@ -1,8 +1,11 @@
 package com.bopit.bopit;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,6 +31,7 @@ public class StatsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
+        this.getSupportActionBar().hide();
 
         setUpFirestoreDB();
 
@@ -61,6 +65,7 @@ public class StatsActivity extends AppCompatActivity {
         installAverageTV.setText(String.format("%.4f", (installProfile.getInstallAverage()/1000)));
         installBestTV.setText(String.format("%.4f", (installProfile.getInstallBest()/1000)));
 
+        overrideFonts(this, findViewById(android.R.id.content));
         //save to cloud
         installProfile.getFirestoreStats();
 
@@ -70,6 +75,8 @@ public class StatsActivity extends AppCompatActivity {
 
     }
 
+
+    //View related
     private Button resetStatsButton;
 
     private View.OnClickListener resetStatsButtonListener = new View.OnClickListener() {
@@ -82,6 +89,22 @@ public class StatsActivity extends AppCompatActivity {
 
     };
 
+    private void overrideFonts(final Context context, final View v) {
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else if (v instanceof TextView ) {
+                ((TextView) v).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Montserrat-Regular.otf"));
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    //data related
     private void resetStats() {
 
         installProfile.setInstallAverage(3000);

@@ -3,6 +3,7 @@ package com.bopit.bopit;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import java.util.Random;
@@ -10,7 +11,7 @@ import java.util.Random;
 public class RandomButtonLocationGenerator {
 
     private RelativeLayout relativeLayout;
-    private Button button;
+    private ImageButton button;
     private int height;
     private int width;
     private int randomLeftMargin;
@@ -20,7 +21,7 @@ public class RandomButtonLocationGenerator {
     private Random random;
 
 
-    public RandomButtonLocationGenerator(RelativeLayout rL, Button b){
+    public RandomButtonLocationGenerator(RelativeLayout rL, ImageButton b){
 
         relativeLayout = rL;
         button = b;

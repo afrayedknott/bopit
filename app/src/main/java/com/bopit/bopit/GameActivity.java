@@ -1,6 +1,7 @@
 package com.bopit.bopit;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -101,7 +103,8 @@ public class GameActivity extends AppCompatActivity {
     };
 
     //Buttons section
-    private Button restartGameButton, reactionButton, statsActivityButton;
+    private ImageButton reactionButton;
+    private Button restartGameButton, statsActivityButton;
     private RelativeLayout reactionButtonLayout;
     private FrameLayout.LayoutParams newButtonLayoutParam;
 
@@ -148,6 +151,7 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        this.getSupportActionBar().hide();
 
         //Initializing the views
         completedGameTextView = findViewById(R.id.textview_completedgame);
@@ -200,17 +204,14 @@ public class GameActivity extends AppCompatActivity {
     private void setRandomButtonLocation() {
 
         randomButtonLocationGenerator = new RandomButtonLocationGenerator(reactionButtonLayout, reactionButton);
-        newButtonLayoutParam = new FrameLayout.LayoutParams(reactionButtonLayout.getLayoutParams());
         randomButtonLocationGenerator.generateRandomMarginsForButton();
-        newButtonLayoutParam.setMargins(randomButtonLocationGenerator.getRandomLeftMargin(), randomButtonLocationGenerator.getRandomTopMargin(),0,0);
-        reactionButtonLayout.setLayoutParams(newButtonLayoutParam);
+        reactionButtonLayout.setPadding(randomButtonLocationGenerator.getRandomLeftMargin(), randomButtonLocationGenerator.getRandomTopMargin(),0,0);
 
     }
 
     private void resetLayout() {
 
-        newButtonLayoutParam.setMargins(0,0,0,0);
-        reactionButtonLayout.setLayoutParams(newButtonLayoutParam);
+        reactionButtonLayout.setPadding(0,0,0,0);
 
     }
 
@@ -221,7 +222,6 @@ public class GameActivity extends AppCompatActivity {
         gameEngine.calculateBestReactionTime();
         Log.i("avg", Double.toString(gameEngine.getAverageReactionTime()));
         Log.i("best", Double.toString(gameEngine.getBestReactionTime()));
-        resetLayout();
         resetLayout();
         timerHandler.removeCallbacks(gameTimerRunnable);
         restartGameButton.setVisibility(View.VISIBLE);

@@ -1,25 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
 
-    <Button
-        android:id="@+id/button_gamestart"
+
+
+    <ImageView
+        android:id="@+id/app_logo"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/app_logo_foreground"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/button_gamestart"
+        android:layout_marginBottom="15dp"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:elevation="0dp"
+        android:translationY="50dp"/>
+
+    <ImageButton
+        android:id="@+id/button_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/button_gamestart"
+        android:layout_marginRight="40dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_settings"
+        android:scaleType="centerInside"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/button_gamestart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
-        android:text="@string/str_button_startgame" />
+        android:src="@drawable/icon_play"
+        android:scaleType="centerInside"
+        android:background="@null"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str_button_stats"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_toRightOf="@+id/button_gamestart"
+        android:layout_marginLeft="40dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_stats"
+        android:scaleType="centerInside"
+        android:background="@null"/>
+
+
 
     <!--may need to use layout_alignParentLeft in button_stats in order to support older SDKs but
     keeping as is at suggestion of Android Studio-->
