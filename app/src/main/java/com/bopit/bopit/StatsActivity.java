@@ -1,30 +1,38 @@
 package com.bopit.bopit;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import com.google.firebase.firestore.FirebaseFirestore;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 
 public class StatsActivity extends AppCompatActivity {
 
     //data properties
     private InstallProfile installProfile;
+    private final String INSTALL_PROFILE_FILE_NAME = "installprofile.txt";
 
     //data saving tools as properties
-    private FirebaseFirestore firestoreDatabase;
+
 
     // Views
-    private TextView installPercentileTV;
-    private TextView previousBestTV;
-    private TextView previousAverageTV;
-    private TextView installBestTV;
-    private TextView installAverageTV;
+    private Button resetStatsButton;
+    private ImageButton restartGameButton;
+    private TextView installPercentileTV, previousBestTV, previousAverageTV, installBestTV,
+            installAverageTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +41,54 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stats);
         this.getSupportActionBar().hide();
 
-        setUpFirestoreDB();
-
-        installProfile = new InstallProfile(this, firestoreDatabase); //includes reading internal
+        File file = new File(this.getFilesDir(), INSTALL_PROFILE_FILE_NAME);
+        InstallProfile tempInstallProfile = readDataInternal();
+        if(tempInstallProfile.getInstallID() == null) {
+            installProfile = new InstallProfile();
+            installProfile.createAndSetInstallID();
+        } else {
+            installProfile = tempInstallProfile;
+        }
 
         //bring in the Intent data if it exists
         if(getIntent().getExtras() != null) {
 
             double tempAverage = getIntent().getDoubleExtra("average", 3000);
             double tempBest = getIntent().getDoubleExtra("best", 3000);
-            installProfile.updateStatsUponGameCompletion(tempAverage, tempBest);
-            installProfile.saveDataInternal(this);
-            installProfile.writeToFirestore();
-            installProfile.getFirestoreStats();
+            int tempHits = getIntent().getIntExtra("hits", 0);
+            installProfile.updateStatsUponGameCompletion(tempAverage, tempBest, tempHits);
+            saveJSONInternalData(installProfile, INSTALL_PROFILE_FILE_NAME);
+            CloudFirestore cloudFirestore = new CloudFirestore(installProfile);
+            cloudFirestore.writeToFirestore();
+            cloudFirestore.getFirestoreStats(new CloudFirestore.helperCallback() {
+                @Override
+                public void onCallback(double percentile) {
+                    installProfile.setPercentile(percentile);
+                    installPercentileTV.setText(String.format("%2.0f%%", (installProfile.getPercentile())));
+
+                }
+            });
+
+        } else {
+
+            CloudFirestore cloudFirestore = new CloudFirestore(installProfile);
+            cloudFirestore.writeToFirestore();
+            cloudFirestore.getFirestoreStats(new CloudFirestore.helperCallback() {
+                @Override
+                public void onCallback(double percentile) {
+                    installProfile.setPercentile(percentile);
+                    installPercentileTV.setText(String.format("%2.0f%%", (installProfile.getPercentile())));
+
+                }
+            });
 
         }
 
         //initialize views
         resetStatsButton = findViewById(R.id.button_resetstats);
         resetStatsButton.setOnClickListener(resetStatsButtonListener);
+        restartGameButton = findViewById(R.id.button_gamerestart);
+        restartGameButton.setOnClickListener(restartGameButtonListener);
 
         installPercentileTV = findViewById(R.id.textview_stats_pct);
         previousAverageTV = findViewById(R.id.textview_previous_avg_time);
@@ -59,31 +96,34 @@ public class StatsActivity extends AppCompatActivity {
         installAverageTV = findViewById(R.id.textview_pb_avg_time);
         installBestTV = findViewById(R.id.textview_pb_best_time);
 
-        installPercentileTV.setText(String.format("%2.2f%%", (installProfile.getPercentile()/1000)));
+        installPercentileTV.setText(String.format("%2.0f%%", (installProfile.getPercentile())));
         previousAverageTV.setText(String.format("%.4f", (installProfile.getPreviousAverage()/1000)));
         previousBestTV.setText(String.format("%.4f", (installProfile.getPreviousBest()/1000)));
         installAverageTV.setText(String.format("%.4f", (installProfile.getInstallAverage()/1000)));
         installBestTV.setText(String.format("%.4f", (installProfile.getInstallBest()/1000)));
 
         overrideFonts(this, findViewById(android.R.id.content));
-        //save to cloud
-        installProfile.getFirestoreStats();
-
-//        loadFirestoreData();
-/*        generateTestData();*/
-/*        setUpRecyclerView();*/
 
     }
 
 
     //View related
-    private Button resetStatsButton;
 
     private View.OnClickListener resetStatsButtonListener = new View.OnClickListener() {
 
         public void onClick(View V) {
 
             resetStats();
+
+        }
+
+    };
+
+    private View.OnClickListener restartGameButtonListener = new View.OnClickListener() {
+
+        public void onClick(View V) {
+
+            startGameActivity();
 
         }
 
@@ -107,55 +147,70 @@ public class StatsActivity extends AppCompatActivity {
     //data related
     private void resetStats() {
 
-        installProfile.setInstallAverage(3000);
-        installProfile.setInstallBest(3000);
-        installProfile.setPreviousAverage(3000);
-        installProfile.setPreviousBest(3000);
-        installProfile.setPercentile(0);
-        installProfile.saveDataInternal(this);
+        installProfile = new InstallProfile();
+        saveJSONInternalData(installProfile, INSTALL_PROFILE_FILE_NAME);
+
+    }
+
+    public InstallProfile readDataInternal(){
+
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            FileInputStream fis = this.openFileInput("installprofile.txt");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        String json = sb.toString();
+        Gson gson = new Gson();
+        InstallProfile temp = gson.fromJson(json, InstallProfile.class);
+        return temp;
+
+    }
+
+    private void saveJSONInternalData(InstallProfile iP, String fileName) {
+
+        Gson gson = new Gson();
+        String s = gson.toJson(iP);
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = this.openFileOutput(fileName, Context.MODE_PRIVATE);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     private void setUpFirestoreDB() {
 
-        firestoreDatabase = FirebaseFirestore.getInstance();
+
 
     }
 
+    public void getFirestoreStats(){
 
-/*    private void loadFirestoreData() {
 
-        gameStatsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+    }
 
-                for(DocumentSnapshot querySnapshot : task.getResult()) {
+    // Intents like in camping
 
-                    GameStats gameStats =
-                            new GameStats(
-                                    querySnapshot.getString("username"),
-                                    querySnapshot.getDouble("avg"),
-                                    querySnapshot.getDouble(("best"));
-                    gameStats.setGameKey(querySnapshot.getId());
-                    gameStatsArrayList.add(gameStats);
+    private void startGameActivity() {
 
-                }
+        Intent gamesStartIntent = new Intent(StatsActivity.this, GameActivity.class);
+        StatsActivity.this.startActivity(gamesStartIntent);
 
-                *//*attachRecyclerViewAdapter();*//*
-
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Toast.makeText(StatsActivity.this, "Problem?", Toast.LENGTH_SHORT).show();
-                Log.w("?", e.getMessage());
-
-            }
-
-        });
-
-    }*/
+    }
 
 }

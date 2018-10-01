@@ -17,6 +17,7 @@ public class GameEngine {
     private int numberOfTimesToHit; // integer of total rounds
     private double averageReactionTime; // average reaction time of user for the round
     private double bestReactionTime; // best reaction time of user for the round
+    private int totalHits;
     private ArrayList<String> missRecordArrayList = new ArrayList<>(); //hit-miss record array list
     private ArrayList<Double> startOfRoundArrayList = new ArrayList<>();
     private ArrayList<Double> endOfRoundArrayList = new ArrayList<>();
@@ -115,7 +116,12 @@ public class GameEngine {
         //account for user missing button clicks
 
         int trackSuccesses = 0;
-        double calcMeanSum = reactionTimesArrayList.get(0) - startOfRoundArrayList.get(0);
+        double calcMeanSum = 0;
+        if(missRecordArrayList.get(0) == "hit"){
+            calcMeanSum = reactionTimesArrayList.get(0) - startOfRoundArrayList.get(0);
+            trackSuccesses++;
+        }
+
         for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
 
             if(missRecordArrayList.get(rTListIter) == "hit"){
@@ -131,10 +137,10 @@ public class GameEngine {
 
     public void calculateBestReactionTime(){
 
-        double best = reactionTimesArrayList.get(0) - startOfRoundArrayList.get(0);
+        double best = 3000;
         double maybeBest = 3000;
 
-        for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
+        for(int rTListIter = 0; rTListIter < reactionTimesArrayList.size(); rTListIter++){
 
             maybeBest = reactionTimesArrayList.get(rTListIter) - startOfRoundArrayList.get(rTListIter);
 
@@ -143,6 +149,26 @@ public class GameEngine {
         }
 
         setBestReactionTime(best);
+
+    }
+
+    public void calculateTotalHits(){
+
+        int trackSuccesses = 0;
+
+        if(missRecordArrayList.get(0) == "hit"){
+            trackSuccesses++;
+        }
+
+        for(int rTListIter = 1; rTListIter < reactionTimesArrayList.size(); rTListIter++){
+
+            if(missRecordArrayList.get(rTListIter) == "hit"){
+                trackSuccesses++;
+            }
+
+        }
+
+        totalHits = trackSuccesses;
 
     }
 
@@ -182,4 +208,11 @@ public class GameEngine {
 
     }
 
+    public int getTotalHits() {
+        return totalHits;
+    }
+
+    public void setTotalHits(int totalHits) {
+        this.totalHits = totalHits;
+    }
 }

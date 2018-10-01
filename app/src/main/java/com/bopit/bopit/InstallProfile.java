@@ -7,6 +7,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,36 +23,25 @@ import java.util.UUID;
 // devices for my purpose or user experience.
 public class InstallProfile implements Serializable {
 
-    private final String INSTALL_PROFILE_FILE_NAME = "installprofile.txt";
     private String installID;
     private double installAverage;
     private double installBest;
+    private int totalHits;
     private double previousAverage;
     private double previousBest;
-    private double betterThanInstallProfilesCount;
-    private double allInstallProfilesCount;
     private double percentile;
 
-    private FirebaseFirestore mFirestoreInstance;
-    private DocumentReference installProfileDocumentRef;
-    private DocumentReference firestoreStatsRef;
+    public InstallProfile() {
 
-    public InstallProfile(Context context, FirebaseFirestore mFirestoreInstance) {
+        this.installAverage = 3000;
+        this.installBest = 3000;
+        this.previousAverage = 3000;
+        this.previousBest = 3000;
+        this.percentile = 0;
+        this.totalHits = 0;
 
-        File file = new File(context.getFilesDir(), INSTALL_PROFILE_FILE_NAME);
-        if(file.exists()) {
-            readDataInternal(context);
-        } else {
-            createAndSetInstallID();
-            installAverage = 3000;
-            installBest = 3000;
-            previousAverage = 3000;
-            previousBest = 3000;
-            percentile = 0;
-        }
-
-        installProfileDocumentRef = mFirestoreInstance.collection("installProfiles").document(getInstallID());
-        firestoreStatsRef = mFirestoreInstance.collection("firestoreStats").document("stats");
+    //    installProfileDocumentRef = mFirestoreInstance.collection("installProfiles").document(getInstallID());
+    //    firestoreStatsRef = mFirestoreInstance.collection("firestoreStats").document("stats");
 
     }
 
@@ -84,8 +75,9 @@ public class InstallProfile implements Serializable {
 
     public void setPreviousBest(double best) { this.previousBest = best;}
 
-    public void updateStatsUponGameCompletion(double average, double best) {
+    public void updateStatsUponGameCompletion(double average, double best, int hits) {
 
+        updateNewHits(hits);
         checkAndSetAverage(average);
         checkAndSetBest(best);
 
@@ -105,129 +97,14 @@ public class InstallProfile implements Serializable {
 
     }
 
+    public void updateNewHits(int hits) {
+
+        totalHits = totalHits + hits;
+
+    }
+
     ///////////////////////////////////////
     // saving or reading this mess offline
     //////////////////////////////////////
-
-    public void saveDataInternal(Context context) {
-
-        String filename = "installprofile.txt";
-
-        Gson gson = new Gson();
-        String s = gson.toJson(this);
-
-        FileOutputStream outputStream;
-
-        try {
-            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(s.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void readDataInternal(Context context){
-
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            FileInputStream fis = context.openFileInput("installprofile.txt");
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader bufferedReader = new BufferedReader(isr);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-        String json = sb.toString();
-        Gson gson = new Gson();
-        InstallProfile temp = gson.fromJson(json, InstallProfile.class);
-
-        //assign all temp properties to actual object properties
-        setInstallID(temp.getInstallID());
-        setInstallAverage(temp.getInstallAverage());
-        setInstallBest(temp.getInstallBest());
-        setPreviousAverage(temp.getPreviousAverage());
-        setPreviousBest(temp.getPreviousBest());
-
-    }
-
-    public void writeToFirestore(){
-
-        installProfileDocumentRef.collection("installProfiles").document(getInstallID()).set(this);
-
-    }
-
-    public void getFirestoreStats(){
-
-        firestoreStatsRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                setAllInstallProfilesCount(documentSnapshot.getDouble("totalInstallProfilesCount"));
-            }
-        });
-
-        installProfileDocumentRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                setBetterThanInstallProfilesCount(documentSnapshot.toObject(InstallProfile.class).betterThanInstallProfilesCount);
-            }
-        });
-
-        setPercentile(getBetterThanInstallProfilesCount()/getAllInstallProfilesCount());
-
-    }
-
-    public double getBetterThanInstallProfilesCount() {
-        return betterThanInstallProfilesCount;
-    }
-
-    public void setBetterThanInstallProfilesCount(double betterThanInstallProfilesCount) {
-        this.betterThanInstallProfilesCount = betterThanInstallProfilesCount;
-    }
-
-    public double getAllInstallProfilesCount() {
-        return allInstallProfilesCount;
-    }
-
-    public void setAllInstallProfilesCount(double allInstallProfilesCount) {
-        this.allInstallProfilesCount = allInstallProfilesCount;
-    }
-
-    /*public Task<Void> writeAndReadInstallProfile(){
-
-        mFirestoreInstance.runTransaction(new Transaction.Function<Void>() {
-            @Override
-            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
-                DocumentSnapshot snapshot = transaction.get(installProfileDocumentRef);
-                setPercentile(snapshot.getDouble("installPercentile"));
-                setInstallAverage(snapshot.getDouble("installAverage"));
-
-                transaction.update(installProfileDocumentRef,);
-
-                // Success
-                return null;
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Transaction success!");
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Transaction failure.", e);
-                    }
-                });
-
-    }*/
 
 }

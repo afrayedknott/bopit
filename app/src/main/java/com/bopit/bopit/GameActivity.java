@@ -26,6 +26,7 @@ public class GameActivity extends AppCompatActivity {
     //properties related to running game
     private Timer timer;
     private GameEngine gameEngine;
+    private int gameRounds;
     private RandomButtonLocationGenerator randomButtonLocationGenerator;
 
     // Clock running in background
@@ -65,9 +66,6 @@ public class GameActivity extends AppCompatActivity {
                 roundIter++;
 
             }
-
-            //end of gameStats
-
 
         }
     };
@@ -168,6 +166,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Initialize gameStats engine
         timer = new Timer();
+        gameRounds = 10;
         startGame();
 
     }
@@ -182,7 +181,7 @@ public class GameActivity extends AppCompatActivity {
     private void startGame() {
 
         gameEngine = new GameEngine();
-        gameEngine.setNumberOfTimesToHit(10);
+        gameEngine.setNumberOfTimesToHit(gameRounds);
         gameEngine.setGameStartTime(System.currentTimeMillis());
         gameEngine.setRandomTimesToHit();
         timerHandler.post(gameStartCountdownRunnable);
@@ -234,6 +233,7 @@ public class GameActivity extends AppCompatActivity {
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra("average", gameEngine.getAverageReactionTime());
         statsIntent.putExtra("best", gameEngine.getBestReactionTime());
+        statsIntent.putExtra("hits", gameEngine.getTotalHits());
         GameActivity.this.startActivity(statsIntent);
 
     }
