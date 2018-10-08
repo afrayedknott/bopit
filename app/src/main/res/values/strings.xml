@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">bopit</string>
+    <string name="app_name">Tap This</string>
     <string name="str_button_startgame">START</string>
     <string name="str_button_stats">STATS</string>
     <string name="str_button_resetstats">RESET STATS</string>
