@@ -30,7 +30,7 @@ public class StatsActivity extends AppCompatActivity {
 
     // Views
     private Button resetStatsButton;
-    private ImageButton restartGameButton;
+    private ImageButton restartGameButton, settingsButton, gamesListButton;
     private TextView installPercentileTV, previousBestTV, previousAverageTV, installBestTV,
             installAverageTV;
 
@@ -89,6 +89,10 @@ public class StatsActivity extends AppCompatActivity {
         resetStatsButton.setOnClickListener(resetStatsButtonListener);
         restartGameButton = findViewById(R.id.button_gamerestart);
         restartGameButton.setOnClickListener(restartGameButtonListener);
+        settingsButton = findViewById(R.id.button_settings);
+        settingsButton.setOnClickListener(settingsButtonListener);
+        gamesListButton = findViewById(R.id.button_gameslist);
+        gamesListButton.setOnClickListener(gamesListButtonListener);
 
         installPercentileTV = findViewById(R.id.textview_stats_pct);
         previousAverageTV = findViewById(R.id.textview_previous_avg_time);
@@ -124,6 +128,25 @@ public class StatsActivity extends AppCompatActivity {
         public void onClick(View V) {
 
             startGameActivity();
+
+        }
+
+    };
+
+    private View.OnClickListener settingsButtonListener = new View.OnClickListener() {
+
+        public void onClick(View V) {
+
+            startSettingsActivity();
+
+        }
+
+    };
+    private View.OnClickListener gamesListButtonListener = new View.OnClickListener() {
+
+        public void onClick(View V) {
+
+            startGamesListActivity();
 
         }
 
@@ -193,23 +216,26 @@ public class StatsActivity extends AppCompatActivity {
 
     }
 
-    private void setUpFirestoreDB() {
-
-
-
-    }
-
-    public void getFirestoreStats(){
-
-
-    }
-
     // Intents like in camping
 
     private void startGameActivity() {
 
         Intent gamesStartIntent = new Intent(StatsActivity.this, GameActivity.class);
         StatsActivity.this.startActivity(gamesStartIntent);
+
+    }
+
+    private void startSettingsActivity() {
+
+        Intent settingsStartIntent = new Intent(StatsActivity.this, SettingsActivity.class);
+        StatsActivity.this.startActivity(settingsStartIntent);
+
+    }
+
+    private void startGamesListActivity() {
+
+        Intent gamesListStartIntent = new Intent(StatsActivity.this, GamesListActivity.class);
+        StatsActivity.this.startActivity(gamesListStartIntent);
 
     }
 
