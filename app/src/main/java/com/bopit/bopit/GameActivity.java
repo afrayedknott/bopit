@@ -17,7 +17,6 @@ public class GameActivity extends AppCompatActivity {
 
     //Non-Button Views, I declared Buttons above their Listeners
     private TextView gameCountdownTextView;
-    private TextView completedGameTextView;
 
     // tells timer which random time to pull and counts each test
     private int roundIter = 0;
@@ -102,19 +101,9 @@ public class GameActivity extends AppCompatActivity {
 
     //Buttons section
     private ImageButton reactionButton;
-    private Button restartGameButton, statsActivityButton;
     private RelativeLayout reactionButtonLayout;
     private FrameLayout.LayoutParams newButtonLayoutParam;
 
-    private View.OnClickListener restartGameButtonListener = new View.OnClickListener() {
-
-        public void onClick(View V) {
-
-            restartGame();
-
-        }
-
-    };
 
     private View.OnClickListener reactionButtonListener = new View.OnClickListener() {
 
@@ -133,15 +122,6 @@ public class GameActivity extends AppCompatActivity {
 
     };
 
-    private View.OnClickListener statsActvityGameButtonListener = new View.OnClickListener() {
-
-        public void onClick(View V) {
-
-            startStatsActivity();
-
-        }
-
-    };
 
     //ready cameras action
     @Override
@@ -152,15 +132,10 @@ public class GameActivity extends AppCompatActivity {
         this.getSupportActionBar().hide();
 
         //Initializing the views
-        completedGameTextView = findViewById(R.id.textview_completedgame);
         gameCountdownTextView = findViewById(R.id.textview_startcountdown);
-        restartGameButton = findViewById(R.id.button_restartgame);
         reactionButton = findViewById(R.id.button_reaction);
-        statsActivityButton = findViewById(R.id.button_stats);
 
-        restartGameButton.setOnClickListener(restartGameButtonListener);
         reactionButton.setOnClickListener(reactionButtonListener);
-        statsActivityButton.setOnClickListener(statsActvityGameButtonListener);
 
         reactionButtonLayout = findViewById(R.id.parent_layout);
 
@@ -188,18 +163,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void restartGame() {
-
-        restartGameButton.setVisibility(View.INVISIBLE);
-        completedGameTextView.setVisibility(View.INVISIBLE);
-        statsActivityButton.setVisibility(View.INVISIBLE);
-        resetLayout();
-        roundIter = 0;
-        startGame();
-
-    }
-
-
     private void setRandomButtonLocation() {
 
         randomButtonLocationGenerator = new RandomButtonLocationGenerator(reactionButtonLayout, reactionButton);
@@ -223,9 +186,7 @@ public class GameActivity extends AppCompatActivity {
         Log.i("best", Double.toString(gameEngine.getBestReactionTime()));
         resetLayout();
         timerHandler.removeCallbacks(gameTimerRunnable);
-        restartGameButton.setVisibility(View.VISIBLE);
-        completedGameTextView.setVisibility(View.VISIBLE);
-        statsActivityButton.setVisibility(View.VISIBLE);
+        startStatsActivity();
     }
 
     private void startStatsActivity() {
