@@ -5,4 +5,5 @@
     <string name="str_button_resetstats">RESET STATS</string>
     <string name="str_button_restartgame">PLAY AGAIN?</string>
     <string name="str_button_comingsoon">COMING SOON</string>
+    <string name="title_activity_game_instructions">GameInstructionsActivity</string>
 </resources>

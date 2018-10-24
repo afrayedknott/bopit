@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameInstructionsActivity"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:id="@+id/text_instructions_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How to Play!"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlueText"
+        android:textSize="40dp"
+        android:layout_above="@+id/text_instructions"
+        android:layout_marginBottom="20dp"/>
+    <TextView
+        android:id="@+id/text_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hit the square as fast as you can."
+        android:textAlignment="center"
+        android:textColor="@color/colorWhiteText"
+        android:textSize="20dp"
+        android:layout_above="@+id/text_instructions_reassurance_flavor"
+        android:layout_marginBottom="20dp"/>
+    <TextView
+        android:id="@+id/text_instructions_reassurance_flavor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simple enough."
+        android:textAlignment="center"
+        android:textColor="@color/colorWhiteText"
+        android:textSize="20dp"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"/>
+
+    <ImageButton
+        android:id="@+id/button_reaction_instructions"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon_rectangle"
+        android:background="@null"
+        android:layout_below="@+id/text_instructions_reassurance_flavor"/>
+
+
+
+</RelativeLayout>

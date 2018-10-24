@@ -32,7 +32,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         public void onClick(View V) {
 
-            startGameActivity();
+            startGameInstructionsActivity();
 
         }
 
@@ -48,9 +48,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     };
 
-    private void startGameActivity() {
+    private void startGameInstructionsActivity() {
 
-        Intent gameStartIntent = new Intent(HomeScreenActivity.this, GameActivity.class);
+        Intent gameStartIntent = new Intent(HomeScreenActivity.this, GameInstructionsActivity.class);
         HomeScreenActivity.this.startActivity(gameStartIntent);
 
     }

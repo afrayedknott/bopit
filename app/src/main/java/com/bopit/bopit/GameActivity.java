@@ -104,7 +104,6 @@ public class GameActivity extends AppCompatActivity {
     private RelativeLayout reactionButtonLayout;
     private FrameLayout.LayoutParams newButtonLayoutParam;
 
-
     private View.OnClickListener reactionButtonListener = new View.OnClickListener() {
 
         public void onClick(View V) {
